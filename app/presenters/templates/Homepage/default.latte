@@ -1,0 +1,58 @@
+{block content}
+<h1 n:block=title class="text-dark">Seznam projektů</h1>
+
+<div class="dropdown mb-4">
+    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Rok: {ifset $curyear}{$curyear}{else}---{/ifset}
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <a class="dropdown-item" n:href="year! 'year' => '---'">---</a>
+        {foreach $years as $id => $year}
+            <a class="dropdown-item ajax" n:href="year! $year->Year">{$year->Year}</a>
+        {/foreach}
+    </div>
+</div>
+
+{snippet projects}
+    <!--projekty-->
+    {foreach $projects as $id => $row}
+        <div class="rounded border bg-white p-3 mt-3">
+            <a n:href="Project:project $id"><h2 class="text-primary">{$row->Name}</h2></a>
+            <hr />
+            <p class="text-secondary">{strlen($row->Desc) > 100 ? substr($row->Desc,0,100).'....' : $in}</p>
+            <div class="d-flex flex-column flex-lg-row align-items-center align-content-lg-start">
+                <a n:href="Project:project $id" class="mr-lg-5 mb-2"><button type="button" class="btn btn-info rounded">Zobrazit více</button></a>
+                <div class="stars mr-lg-5 mb-2 d-flex align-items-center align-items-sm-left flex-column flex-lg-row">
+                    <p class="ml-lg-5  mb-0">Hodnocení projektu:</p>
+                    <span class="d-flex">
+                    {var $res = $row->Score}
+                    {for $i = 0; $i < 5; $i++}
+                        {if ($res-1) > 0}
+                            {php $res--}
+                            <i class="fas fa-star text-warning h-auto"></i>
+                        {elseif ($res- 0.5 >= 0)}
+                            {php $res--}
+                            <i class="fas fa-star-half-alt text-warning"></i>
+                        {else}
+                            <i class="far fa-star text-warning"></i>
+                        {/if}
+                    {/for}
+                    </span>
+
+
+                </div>
+                    <a class="ml-lg-5 mr-lg-5 mb-2 card-link" href="{$row->Url}" target="_blank" n:ifcontent>{$row->Url}</a>
+                <span class="ml-lg-5 d-flex">Rok:<p class="ml-2 mb-0">{$row->Year}</p></span>
+            </div>
+        </div>
+    {/foreach}
+{/snippet}
+{/block}
+
+{block scripts}
+{/block}
+
+
+{block head}
+{/block}
