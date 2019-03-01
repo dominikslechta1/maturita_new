@@ -1,6 +1,73 @@
 {block content}
 
-<h1 n:block=title class="text-dark">nazev mat projektu</h1>
+<h1 n:block=title class="text-primary text-center text-lg-left">{$project->Name}</h1>
+
+
+<div class="btn-group my-4" role="group" aria-label="Project edit">
+    <button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i> Smazat</button>
+    <button type="button" class="btn btn-warning"><i class="far fa-edit"></i> Upravit</button>
+    <button type="button" class="btn btn-success"><i class="fas fa-plus"></i> Přidat Soubor</button>
+</div>
+
+
+<div class="d-column-flex min-height w-auto">
+    <p class="text-secondary text-left">{$project->Desc}</p>
+    <ul class="list-unstyled d-flex flex-column justify-content-around align-items-center flex-lg-row">
+
+        <!--user-->
+        <li>
+            <strong>Vypracoval:&nbsp;</strong>
+            {$project->ref('m_users', 'User')->Username}
+        </li>
+
+        <!--consultant-->
+        <li>
+            <strong>Konsultant:&nbsp;</strong>
+            {ifset $project->Consultant}
+                {$project->ref('m_users', 'Consultant')->Username}
+            {else}
+                neurčeno
+            {/ifset}
+        </li>
+
+        <!--oponent-->
+        <li>
+            <strong>Oponent:&nbsp;</strong>
+            {ifset $project->Oponent}
+                {$project->ref('m_users', 'Oponent')->Username}
+            {else}
+                neurčeno
+            {/ifset}
+        </li>
+
+        <!--Score-->
+        <li class="d-flex align-items-center"><p class="m-0 font-weight-bold">Hodnocení projektu:</p>
+            <span class="d-flex">
+                {var $res = 3.5}
+                {for $i = 0; $i < 5; $i++}
+                    {if ($res-1) >= 0}
+                        {php $res--}
+                        <i class="fas fa-star text-warning"></i>
+                    {elseif ($res- 0.5 >= 0)}
+                        {php $res--}
+                        <i class="fas fa-star-half-alt text-warning"></i>
+                    {else}
+                        <i class="far fa-star text-warning"></i>
+                    {/if}
+                {/for}
+            </span>
+        </li>
+        <li>
+            <strong>Rok:&nbsp;</strong>
+            {$project->Year}
+        </li>
+    </ul>
+</div>
+        
+        
+<hr/>
+
+<!--files-->
 
 
 
@@ -10,4 +77,9 @@
 
 
 {block head}
+<style>
+    .min-height{
+        min-height: 160px;
+    }
+</style>
 {/block}

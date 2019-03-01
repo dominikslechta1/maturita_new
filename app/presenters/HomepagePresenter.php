@@ -40,15 +40,17 @@ class HomepagePresenter extends BasePresenter {
     
 
     protected function createComponentSignUpForm() {
-        return $this->signInFactory->create(function ($message = '') {
-                    $this->flashMessage($message);
+        return $this->signInFactory->create(function () {
+                    $this->flashMessage('Byl Jsi úspěšně přihlášen.');
                     $this->redirect('Homepage:');
                 });
     }
 
     public function handleLogout() {
         $this->user->logout();
-        $this->flashMessage('logged out', 'warning');
+        $message = 'Byl jsi odhlášen.';
+        $type = 'danger';
+        $this->flashMessage($message, $type);
         $this->redirect('Homepage:');
     }
 

@@ -49,7 +49,7 @@ final class SignInFormFactory {
 
                 return;
             }
-            $onSuccess('Byl Jsi úspěšně přihlášen');
+            $onSuccess();
         };
 
         return $form;

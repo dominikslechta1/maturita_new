@@ -36,6 +36,9 @@ class ProjectManager {
     public function getProjects() {
         return $this->database->table(self::TABLE_NAME);
     }
+    public function getProjectsWhereId($param) {
+        return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID,$param);
+    }
     public function showYear($year) {
         if ($year !== '') {
             return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_YEAR, $year);
