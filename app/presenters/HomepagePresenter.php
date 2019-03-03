@@ -8,6 +8,7 @@ use \Nette\Security\User;
 use Nette\Application\UI\Form;
 use App\Model\UserPrivilegesManager;
 use App\Model\ProjectManager;
+use App\Helpers\RoleHelper;
 
 class HomepagePresenter extends BasePresenter {
 
@@ -20,40 +21,43 @@ class HomepagePresenter extends BasePresenter {
     private $user;
     private $projectM;
     private $privilege;
+    private $roleH;
 
-    public function __construct(Forms\SignInFormFactory $sign, User $user, UserPrivilegesManager $privilege, ProjectManager $projectm) {
+    public function __construct(RoleHelper $roles, Forms\SignInFormFactory $sign, User $user, UserPrivilegesManager $privilege, ProjectManager $projectm) {
         $this->signInFactory = $sign;
         $this->user = $user;
         $this->privilege = $privilege;
         $this->projectM = $projectm;
+        $this->roleH = $roles;
     }
 
     public function renderDefault() {
         if (!isset($this->template->projects)) {
-            $this->template->projects = $this->projectM->getProjects()->select('*');
+            $this->template->projects = $this->roleH->GetProjectsByRoleAndVisible();
+            //$this->template->projects = $this->projectM->getProjects()->select('*');
         }
         if (!isset($this->template->years)) {
             $this->template->years = $this->projectM->getYears()->select('*');
         }
     }
 
-    
-
     protected function createComponentSignUpForm() {
-        return $this->signInFactory->create(function ($message = '') {
-                    $this->flashMessage($message);
+        return $this->signInFactory->create(function ($message,$type) {
+                    $this->flashMessage($message, $type);
                     $this->redirect('Homepage:');
                 });
     }
 
     public function handleLogout() {
         $this->user->logout();
-        $this->flashMessage('logged out', 'warning');
+        $message = 'Byl jsi odhlášen.';
+        $type = 'danger';
+        $this->flashMessage($message, $type);
         $this->redirect('Homepage:');
     }
 
     public function handleYear($year = '---') {
-        $this->template->projects = $this->projectM->showYear(($year !== '---') ? $year : '')->select('*');
+        $this->template->projects = $this->roleH->GetProjectsByRoleAndVisible($year);
         $this->template->curyear = $year;
         $this->redrawControl('projects');
     }

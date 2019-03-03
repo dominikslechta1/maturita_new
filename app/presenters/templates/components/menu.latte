@@ -12,25 +12,36 @@
             <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item">
                 <a class="nav-link" n:href="Homepage:default">Domů <span class="sr-only">(current)</span></a>
             </li>
-            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item">
-                <a class="nav-link" href="#">Link</a>
+            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item" n:if="$user->isAllowed('users', 'view')">
+                <a class="nav-link" href="#">Uživatelé</a>
             </li>
-            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item">
-                <a class="nav-link" href="#">Disabled</a>
+            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item" n:if="$user->isAllowed('projects', 'view')">
+                <a class="nav-link" href="#">Projekty</a>
+            </li>
+            <li class="my-2 my-lg-0 nav-item dropdown" n:if="$user->isAllowed('projects', 'manage')">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Funkce správce
+                </a>
+                <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="#">Přidat uživatele</a>
+                    <a class="dropdown-item" href="#">Přidat projekt</a>
+                    <a class="dropdown-item" href="#">Spravovat projekty</a>
+                    <a class="dropdown-item" href="#">Spravovat uživatele</a>
+                </div>
             </li>
 {if $user->isLoggedIn()}
-            <li class="my-2 my-lg-0 nav-item dropdown ml-auto">
+            <li class="my-2 my-lg-0 nav-item dropdown ml-lg-auto">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="far fa-user"></i>
+                    <i class="far fa-user"></i> {$user->getIdentity()->data[0]}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right text-left" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Přehled</a>
+                    <a class="dropdown-item" href="#">Nastavení</a>
                     <a class="dropdown-item" n:href="Sign:out">odhlásit</a>
                 </div>
             </li>
         {else}
-            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item, ml-auto">
+            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item, ml-lg-auto">
                 <a class="nav-link" n:href="Sign:in">Přihlásit</a>
             </li>
         {/if}

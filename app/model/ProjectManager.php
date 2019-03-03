@@ -36,17 +36,40 @@ class ProjectManager {
     public function getProjects() {
         return $this->database->table(self::TABLE_NAME);
     }
+
+    public function getProjectsWhereId($param) {
+        return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $param);
+    }
+
     public function showYear($year) {
-        if ($year !== '') {
-            return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_YEAR, $year);
-        }
-        else{
-            return $this->database->table(self::TABLE_NAME);
+        if ($year !== '' && $year !== '---') {
+            return $this->project->where(self::COLUMN_YEAR, $year);
+        } else {
+            return $this->project;
         }
     }
-    
-    public function getYears(){
+
+    /**
+     * shows visible or invisible projects
+     * @param boolean $bool show visible = true, show invisible = false
+     * @return context
+     */
+    public function showPublic($bool = true) {
+        $this->project = $this->getProjects();
+        if($bool){
+            $this->project = $this->project->where(self::COLUMN_PUBLIC, '1');
+        }else{
+            $this->project = $this->project;
+        }
+        return $this;
+    }
+
+    public function getYears() {
         return $this->database->table(self::TABLE_NAME)->group(self::COLUMN_YEAR);
+    }
+    
+    public function get(){
+        return $this->project;
     }
 
 }
