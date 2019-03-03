@@ -29,7 +29,7 @@ final class SignPresenter extends BasePresenter {
 
     protected function createComponentSignUpForm() {
         return $this->signInFactory->create(function ($message = '') {
-                    $this->flashMessage($message);
+                    $this->flashMessage($message,'success');
                     $this->redirect('Homepage:');
                 });
     }

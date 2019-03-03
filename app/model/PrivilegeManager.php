@@ -28,6 +28,7 @@ class PrivilegeManager{
      */
     public function getPrivileges(){
         return $this->database->table(self::TABLE_NAME)->fetchPairs('idPrivileges', 'Privilege');
+        
     }
     
 }

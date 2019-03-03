@@ -16,6 +16,7 @@ session:
 
 
 services:
+	- App\Helpers\RoleHelper
 	- App\Model\UserManager
 	- App\Model\ProjectManager
 	- App\Model\UserPrivilegesManager
@@ -23,4 +24,5 @@ services:
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	- App\Forms\SignUpFormFactory
+	- App\Model\AuthorizatorFactory::create
 	router: App\RouterFactory::createRouter
