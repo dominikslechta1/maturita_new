@@ -57,23 +57,22 @@ class UsersManager {
             return false;
         }
     }
-    public function getStudents(){
+
+    public function getStudents() {
         $ids = $this->privileges->getPrivilegeUsers(2);
-        foreach($ids as $id){
-            $res[$this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->fetch()->idUser] = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->fetch()->Username;
-        }
+        $res = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $ids)->fetchPairs(self::COLUMN_ID, self::COLUMN_NAME);
         return $res;
     }
-    public function getConsultants(){
+
+    public function getConsultants() {
         $ids = $this->privileges->getPrivilegeUsers(3);
-        foreach($ids as $id){
-            $res[$this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->fetch()->idUser] = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->fetch()->Username;
-        }
+        $res = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $ids)->fetchPairs(self::COLUMN_ID, self::COLUMN_NAME);
         return $res;
     }
-    public function getOponents(){
+
+    public function getOponents() {
         $ids = $this->privileges->getPrivilegeUsers(4);
-        foreach($ids as $id){
+        foreach ($ids as $id) {
             $res[$this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->fetch()->idUser] = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->fetch()->Username;
         }
         return $res;

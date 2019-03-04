@@ -34,15 +34,17 @@ class ProjectManager {
     }
 
     public function addProject($values) {
-        $consultant = ($values->consultant != '0') ? $values->consultant : NULL;
-        $oponent =($values->oponent != '0') ? $values->oponent : NULL;
-        $this->database->table(self::TABLE_NAME)->insert([
+        $id =$this->database->table(self::TABLE_NAME)->insert([
             self::COLUMN_NAME => $values->name,
             self::COLUMN_USER => $values->user,
-            self::COLUMN_CONSULTANT => $consultant,
-            self::COLUMN_OPONENT => $oponent,
             self::COLUMN_YEAR => date('Y'),
         ]);
+        $update = $this->database->table(self::TABLE_NAME)->get($id);
+        if($values->consultant != ''){
+            $update->update(['Consultant' => $values->consultant]);
+        }if ($values->oponent != '') {
+            $update->update(['Oponent' => $values->oponent]);
+        }
         return true;
     }
 
@@ -50,6 +52,11 @@ class ProjectManager {
         return $this->database->table(self::TABLE_NAME);
     }
 
+    /**
+     * gets project id and return un-fetched database request
+     * @param int $id
+     * @return context
+     */
     public function getProjectsWhereId($param) {
         return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $param);
     }

@@ -25,16 +25,16 @@ class AuthorizatorFactory extends \Nette\Security\Permission {
         $acl->addResource('score');
         $acl->addResource('users');
 
-        $acl->deny(self::ALL,self::ALL,['manage']);
+        $acl->deny(self::ALL, self::ALL, ['manage']);
         $acl->allow('administrator');
         $acl->allow('guest', ['projects', 'project'], ['public', 'view']);
         $acl->allow('guest', ['score'], ['view']);
         $acl->deny('guest', ['files'], ['view']);
         $acl->deny('guest', 'users');
-        $acl->deny('guest', ['score', 'files', 'project', 'projects'], ['edit', 'add', 'unlocklock', 'private', 'delete', 'addfile']);
+        $acl->deny('guest', ['score', 'files', 'project', 'projects'], ['edit', 'add', 'unlocklock', 'visibility', 'private', 'delete', 'addfile']);
 
-        $acl->allow('student', ['projects', 'project'], ['editdesc', 'view','addfile']);
-        $acl->deny('student', ['projects', 'project'], ['add', 'delete', 'edit', 'unlocklock']);
+        $acl->allow('student', ['projects', 'project'], ['editdesc', 'view', 'addfile']);
+        $acl->deny('student', ['projects', 'project'], ['add', 'delete', 'edit', 'unlocklock', 'visibility']);
         $acl->allow('student', ['score'], ['view']);
         $acl->deny('student', ['score'], ['edit', 'add', 'delete']);
         $acl->allow('student', ['files'], ['view', 'edit', 'add', 'delete']);

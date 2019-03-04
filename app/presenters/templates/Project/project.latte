@@ -4,7 +4,7 @@
 
 
 <div class="btn-group my-4" role="group" aria-label="Project edit">
-    <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
+    <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?')" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
     <a role="button" class="btn btn-warning" n:if="$user->isAllowed('project', 'edit')" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit</a>
     <a role="button" class="btn btn-success" n:if="$user->isAllowed('project', 'addfile')" href="#"><i class="fas fa-plus"></i> Přidat Soubor</a>
 </div>

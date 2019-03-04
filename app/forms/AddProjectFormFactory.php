@@ -14,11 +14,8 @@ final class AddProjectFormFactory {
 
     /** @var FormFactory */
     private $factory;
-
     private $userM;
-    
-    private  $projectM;
-
+    private $projectM;
 
     public function __construct(FormFactory $factory, UsersManager $userM, ProjectManager $projectM) {
         $this->factory = $factory;
@@ -32,25 +29,25 @@ final class AddProjectFormFactory {
     public function create(callable $onSuccess) {
         $form = $this->factory->create();
         $students = $this->userM->getStudents();
-        $consultants = $this->userM->getConsultants();
-        $oponents = $this->userM->getOponents();
-        
+        $consultants = ['' => '---']+$this->userM->getConsultants();
+        $oponents = ['' => '---']+$this->userM->getOponents();
+
         $form->addText('name', 'Zadej název projektu:')
                 ->setRequired();
-        
-        $form->addSelect('user', 'Vyber studenta:',$students)->setRequired();
-        
-        $form->addSelect('consultant', 'Vyber konzultanta:',array_merge([-1=>'---'], $consultants));
-        
-        $form->addSelect('oponent', 'Vyber oponenta',array_merge([-1=>'---'], $oponents));
+
+        $form->addSelect('user', 'Vyber studenta:', $students)->setRequired();
+
+        $form->addSelect('consultant', 'Vyber konzultanta:',  $consultants);
+
+        $form->addSelect('oponent', 'Vyber oponenta', $oponents);
 
         $form->addSubmit('send', 'Uložit');
 
         $form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
             $res = $this->projectM->addProject($values);
-            if($res){
-                $onSuccess('Projekt byl úspěšně uložen.','success');
-            }else{
+            if ($res) {
+                $onSuccess('Projekt byl úspěšně uložen.', 'success');
+            } else {
                 $onSuccess('Projekt nebyl uložen', 'danger');
             }
         };
