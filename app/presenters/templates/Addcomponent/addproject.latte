@@ -1,0 +1,13 @@
+{* Latte template *}
+
+{block content}
+<h1 n:block=title class="text-dark">Přidat projekt</h1>
+{if $user->isAllowed('project','add')}
+{control addProjectForm}
+{/if}
+{/block}
+{block scripts}
+<script>
+    {ifset $alert}alert({$alert}{/ifset});
+</script>
+{/block}

@@ -18,11 +18,16 @@ session:
 services:
 	- App\Helpers\RoleHelper
 	- App\Model\UserManager
+	- App\Model\UsersManager
 	- App\Model\ProjectManager
 	- App\Model\UserPrivilegesManager
 	- App\Model\PrivilegeManager
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
 	- App\Forms\SignUpFormFactory
+	- App\Forms\ChangePassFormFactory
+	- App\Forms\ChangeUsernameFormFactory
+	- App\Forms\AddProjectFormFactory
+	- App\Forms\EditProjectFormFactory
 	- App\Model\AuthorizatorFactory::create
 	router: App\RouterFactory::createRouter

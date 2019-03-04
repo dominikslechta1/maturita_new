@@ -53,5 +53,22 @@ class UserPrivilegesManager {
             ]);
         }
     }
+    public function deletePrivilegeOnUser($idUser){
+        $count = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_user, $idUser)->delete();
+        if($count > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public function getPrivilegeUsers($idPrivilege) {
+        $n = $this->database->table(self::TABLE_NAME)
+                ->where(self::COLUMN_privilege, $idPrivilege);
+        $res;
+        while ($row = $n->fetch()) {
+            $res[] = $row[self::COLUMN_user];
+        }
+        return $res;
+    }
 
 }

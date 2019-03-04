@@ -1,0 +1,7 @@
+{* Latte template *}
+
+{block content}
+<h1 n:block=title class="text-dark">Přidat uživatele</h1>
+{if $user->isAllowed('users','add')}
+{control signUpForm}
+{/if}

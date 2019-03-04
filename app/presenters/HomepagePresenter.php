@@ -40,6 +40,14 @@ class HomepagePresenter extends BasePresenter {
             $this->template->years = $this->projectM->getYears()->select('*');
         }
     }
+    public function renderUserprojects(){
+        if($this->user->isLoggedIn()){
+            $this->template->projects = $this->projectM->getProjectsByUser($this->user->getId());
+        }else{
+            $this->flashMessage('Nejsi přihlášen', 'danger');
+        }
+        
+    }
 
     protected function createComponentSignUpForm() {
         return $this->signInFactory->create(function ($message,$type) {

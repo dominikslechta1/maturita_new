@@ -1,0 +1,25 @@
+{* Latte template *}
+
+{block content}
+
+<h1 n:block=title class="text-dark">Seznam Uživatelů</h1>
+{if $user->isAllowed('users', 'view')}
+    {snippet users}
+        {foreach $users as $id => $usera}
+            <div class="rounded border bg-white p-3 mt-3">
+                <a><h3 class="text-primary">{$usera->Email}</h3></a>
+                <hr />
+                <div class="d-flex flex-column flex-lg-row">
+                    <div>
+                        <p><strong>Jméno:</strong> {$usera->Firstname}</p>
+                        <p><strong>Příjmení:</strong> {$usera->Surname}</p>
+                    </div>
+                    <div class="btn-group-vertical ml-lg-auto" role="group">
+                        <a class="btn btn-warning" href="#" role="button">Upravit</a>
+                        <a class="btn btn-danger" n:href="deleteUser! $usera->idUser" role="button">Smazat</a>
+                    </div>
+                </div>
+            </div>
+        {/foreach}
+    {/snippet}
+{/if}
