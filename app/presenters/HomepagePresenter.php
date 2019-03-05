@@ -56,13 +56,13 @@ class HomepagePresenter extends BasePresenter {
                 });
     }
 
-    public function handleLogout() {
-        $this->user->logout();
-        $message = 'Byl jsi odhlášen.';
-        $type = 'danger';
-        $this->flashMessage($message, $type);
-        $this->redirect('Homepage:');
-    }
+//    public function handleLogout() {
+//        $this->user->logout();
+//        $message = 'Byl jsi odhlášen.';
+//        $type = 'danger';
+//        $this->flashMessage($message, $type);
+//        $this->redirect('Homepage:');
+//    }
 
     public function handleYear($year = '---') {
         $this->template->projects = $this->roleH->GetProjectsByRoleAndVisible($year);

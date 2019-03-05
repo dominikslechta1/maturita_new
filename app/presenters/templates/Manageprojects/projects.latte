@@ -1,11 +1,14 @@
 {* Latte template *}
 
 {block content}
+<h1 n:block=title class="text-dark">Spravovat projekty</h1>
+
+<div><a class="btn btn-info" href="#" role="button">Uzamknout vše</a><a class="btn btn-info" href="#" role="button">Odemknout vše</a></div>
 {snippet projects}
     <!--projekty-->
-    {if $projects->count('*') > 0}
+    {if $projects->count('*') > 0 && $user->isAllowed('projects', 'manage')}
         {foreach $projects as $id => $row}
-            {snippet project-$id}
+            {snippet project$id}
                 <div class="rounded border bg-white p-3 mt-3 d-flex flex-column flex-lg-row">
                     <div class="project flex-grow-1">
                         <a n:href="Project:project $id"><h2 class="text-primary">{$row->Name}</h2></a>
@@ -38,10 +41,10 @@
                     </div>
                     <div class="btn-group-vertical ml-lg-4">
 
-                        <a class="btn btn-info ajax" n:if="$user->isAllowed('project','visibility')" role="button" href="#">{$row->Public == '1'? 'Skrýt':'Zveřejnit'}</a>
+                        <a class="btn btn-info ajax" n:if="$user->isAllowed('project','visibility')" role="button" n:href="Public! 'id' => $id, 'public' => $row->Public">{$row->Public == '1'? 'Skrýt':'Zveřejnit'}</a>
                         <a class="btn btn-dark ajax" n:if="$user->isAllowed('project','unlocklock')" role="button" n:href="Lock! 'id' => $id, 'lock' => $row->Lock">{$row->Lock == '1'? 'Odemknout':'Zamknout'}</a>
-                        <a class="btn btn-warning ajax" role="button" href="#">Upravit</a>
-                        <a class="btn btn-danger ajax" role="button" href="#">Smazat</a>
+                        <a class="btn btn-warning ajax" n:if="$user->isAllowed('project','edit')" role="button" n:href="Manageprojects:edit $id">Upravit</a>
+                        <a class="btn btn-danger ajax" n:if="$user->isAllowed('project','delete')" role="button" n:href="Delete! 'id' => $id">Smazat</a>
 
                     </div>
                 </div>

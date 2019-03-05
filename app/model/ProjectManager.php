@@ -34,13 +34,13 @@ class ProjectManager {
     }
 
     public function addProject($values) {
-        $id =$this->database->table(self::TABLE_NAME)->insert([
+        $id = $this->database->table(self::TABLE_NAME)->insert([
             self::COLUMN_NAME => $values->name,
             self::COLUMN_USER => $values->user,
             self::COLUMN_YEAR => date('Y'),
         ]);
         $update = $this->database->table(self::TABLE_NAME)->get($id);
-        if($values->consultant != ''){
+        if ($values->consultant != '') {
             $update->update(['Consultant' => $values->consultant]);
         }if ($values->oponent != '') {
             $update->update(['Oponent' => $values->oponent]);
@@ -94,9 +94,9 @@ class ProjectManager {
 
     public function deleteProject($id) {
         $project = $this->database->table(self::TABLE_NAME)->get($id);
-        if ($project !== '') {
-            $project->delete();
-            return true;
+        if ($project->idProject == '') {
+                $project->delete();
+                return true;
         } else {
             return false;
         }
