@@ -1,0 +1,10 @@
+{* Latte template *}
+
+
+{block content}
+<h1 n:block=title class="text-dark">Upravit projekt</h1>
+{if $user->isAllowed('project','edit')}
+{control editProjectForm}
+{/if}
+
+{/block}

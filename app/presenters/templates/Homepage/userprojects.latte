@@ -1,19 +1,8 @@
+{* Latte template *}
+
 {block content}
-<h1 n:block=title class="text-dark">Seznam projektů</h1>
 
-<div class="dropdown mb-4">
-    <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Rok: {ifset $curyear}{$curyear}{else}---{/ifset}
-    </a>
-
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        <a class="dropdown-item" n:href="year! 'year' => '---'">---</a>
-        {foreach $years as $id => $year}
-            <a class="dropdown-item ajax" n:href="year! $year->Year">{$year->Year}</a>
-        {/foreach}
-    </div>
-</div>
-
+<h1 n:block=title class="text-dark">Vaše projekty</h1>
 {snippet projects}
     <!--projekty-->
     {if $projects->count('*') > 0}
@@ -52,11 +41,3 @@
         Nejsou projekty které by jsi mohl vidět
     {/if}
 {/snippet}
-{/block}
-
-{block scripts}
-{/block}
-
-
-{block head}
-{/block}

@@ -1,0 +1,90 @@
+{* Latte template *}
+
+{block content}
+{if $user->isLoggedIn()}
+    <h1 n:block=title class="text-dark">{$userview->Username}</h1>
+    <div onload="n();" class="d-flex flex-column flex-lg-row mt-5">
+        <div class="">
+            <h3 class="text-dark">Přehled</h3>
+            <ul class="list-unstyled">
+                <li><strong>Křestní jméno:</strong> {$userview->Firstname}</li>
+                <li><strong>Příjmení:</strong> {$userview->Surname}</li>
+                <li><strong>E-mail:</strong> {$userview->Email}</li>
+                <li class="mt-2"><h4 class="text-dark ">Role</h4></li>
+                <ul class="pl-4 list-unstyled" n:foreach="$userroles as $userrole">
+                    <li>{$userrole}</li>
+                </ul>
+            </ul>
+
+        </div>
+        <div height="100%" style="margin: 0 auto;">
+            <hr class="hr" />
+        </div>
+        <div class="text-lg-right d-flex flex-column">
+            <h3 class="text-dark">Nastavení</h3>
+            <button type="button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#changeUsername">Změnit uživatelské jméno</button>
+            <!-- Modal -->
+            <div class="modal fade" id="changeUsername" tabindex="-1" role="dialog" aria-labelledby="changeUsernameLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Změna uživatelského jména</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {control changeUsernameForm}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" data-toggle="modal" data-target="#changePass" class="btn btn-primary mt-4">Změnit heslo</button>
+            <!-- Modal -->
+            <div class="modal fade" id="changePass" tabindex="-1" role="dialog" aria-labelledby="changePassLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Změna hesla</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            {control changePassForm}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{/if}
+{/block}
+
+{block head}
+<style>
+    .hr{
+        height: 100%;
+        width: 1px;
+        background: black;
+        margin: 0 auto;
+    }
+</style>
+{/block}
+
+{block scripts}
+<script>
+    var n = function () {
+        if ($('#changePass .invalid-feedback').length) {
+            $('#changePass').modal('show');
+        }
+        elseif($('#changeUsername .invalid-feedback').length){
+            $('#changeUsername').modal('show');
+        }
+    };
+    $(document).ready(n);
+
+
+
+</script>
+{/block}

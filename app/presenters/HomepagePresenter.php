@@ -40,6 +40,14 @@ class HomepagePresenter extends BasePresenter {
             $this->template->years = $this->projectM->getYears()->select('*');
         }
     }
+    public function renderUserprojects(){
+        if($this->user->isLoggedIn()){
+            $this->template->projects = $this->projectM->getProjectsByUser($this->user->getId());
+        }else{
+            $this->flashMessage('Nejsi přihlášen', 'danger');
+        }
+        
+    }
 
     protected function createComponentSignUpForm() {
         return $this->signInFactory->create(function ($message,$type) {
@@ -48,13 +56,13 @@ class HomepagePresenter extends BasePresenter {
                 });
     }
 
-    public function handleLogout() {
-        $this->user->logout();
-        $message = 'Byl jsi odhlášen.';
-        $type = 'danger';
-        $this->flashMessage($message, $type);
-        $this->redirect('Homepage:');
-    }
+//    public function handleLogout() {
+//        $this->user->logout();
+//        $message = 'Byl jsi odhlášen.';
+//        $type = 'danger';
+//        $this->flashMessage($message, $type);
+//        $this->redirect('Homepage:');
+//    }
 
     public function handleYear($year = '---') {
         $this->template->projects = $this->roleH->GetProjectsByRoleAndVisible($year);

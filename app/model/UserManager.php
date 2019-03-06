@@ -6,6 +6,7 @@ use Nette;
 use Nette\Security\Passwords;
 use App\Model\UserPrivilegesManager;
 
+
 /**
  * Users management.
  */
@@ -17,6 +18,8 @@ class UserManager implements \Nette\Security\IAuthenticator {
             TABLE_NAME = 'm_users',
             COLUMN_ID = 'idUser',
             COLUMN_NAME = 'Username',
+            COLUMN_FIRSTNAME = 'Firstname',
+            COLUMN_SURNAME = 'Surname',
             COLUMN_PASSWORD_HASH = 'Password',
             COLUMN_EMAIL = 'Email';
 
@@ -27,6 +30,7 @@ class UserManager implements \Nette\Security\IAuthenticator {
     public function __construct(Nette\Database\Context $database, UserPrivilegesManager $privilege) {
         $this->database = $database;
         $this->privileges = $privilege;
+
     }
 
     /**
@@ -34,7 +38,7 @@ class UserManager implements \Nette\Security\IAuthenticator {
      * @return Nette\Security\Identity
      * @throws Nette\Security\AuthenticationException
      */
-    public function authenticate(array $credentials) {
+    public function authenticate(array $credentials){
         list($email, $password) = $credentials;
 
         $row = $this->database->table(self::TABLE_NAME)
@@ -58,22 +62,31 @@ class UserManager implements \Nette\Security\IAuthenticator {
 
     /**
      * Adds new user.
-     * @param string $username username
+     * @param string $firstname firstname
+     * @param string $surname surname
      * @param  string $email email
      * @param  string $password password
      * @param  array $roles roles
      * @return void
      * @throws throw UniqueConstraintViolationException
      */
-    public function add($username, $email, $password, $roles) {
+    public function add($firstname, $surname, $email, $password, $roles) {
         Nette\Utils\Validators::assert($email, 'email');
+        
+        $username = $firstname . ' ' . $surname;
+        
             $id = $this->database->table(self::TABLE_NAME)->insert([
                 self::COLUMN_NAME => $username,
+                self::COLUMN_FIRSTNAME => $firstname,
+                self::COLUMN_SURNAME => $surname,
                 self::COLUMN_PASSWORD_HASH => Passwords::hash($password),
                 self::COLUMN_EMAIL => $email,
             ]);
 
             $this->privileges->insertPrivilege($id, $roles);
     }
-
+    
+    public function  getUser($id){
+        return $this->database->table(self::TABLE_NAME)->get($id);
+    }
 }

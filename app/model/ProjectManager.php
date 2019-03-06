@@ -33,10 +33,34 @@ class ProjectManager {
         $this->database = $database;
     }
 
-    public function getProjects() {
-        return $this->database->table(self::TABLE_NAME);
+    public function addProject($values) {
+        $id = $this->database->table(self::TABLE_NAME)->insert([
+            self::COLUMN_NAME => $values->name,
+            self::COLUMN_USER => $values->user,
+            self::COLUMN_YEAR => date('Y'),
+        ]);
+        $update = $this->database->table(self::TABLE_NAME)->get($id);
+        if ($values->consultant != '') {
+            $update->update(['Consultant' => $values->consultant]);
+        }if ($values->oponent != '') {
+            $update->update(['Oponent' => $values->oponent]);
+        }
+        return true;
     }
 
+    public function getProjects($year = '') {
+        if ($year == '' || !is_numeric($year)) {
+            return $this->database->table(self::TABLE_NAME);
+        }else{
+            return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_YEAR, $year);
+        }
+    }
+
+    /**
+     * gets project id and return un-fetched database request
+     * @param int $id
+     * @return context
+     */
     public function getProjectsWhereId($param) {
         return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $param);
     }
@@ -56,9 +80,9 @@ class ProjectManager {
      */
     public function showPublic($bool = true) {
         $this->project = $this->getProjects();
-        if($bool){
+        if ($bool) {
             $this->project = $this->project->where(self::COLUMN_PUBLIC, '1');
-        }else{
+        } else {
             $this->project = $this->project;
         }
         return $this;
@@ -67,9 +91,43 @@ class ProjectManager {
     public function getYears() {
         return $this->database->table(self::TABLE_NAME)->group(self::COLUMN_YEAR);
     }
-    
-    public function get(){
+
+    public function get() {
         return $this->project;
+    }
+
+    public function deleteProject($id) {
+        $project = $this->database->table(self::TABLE_NAME)->get($id);
+        if ($project->idProject !== '') {
+            $project->delete();
+            return true;
+        } else {
+            return false;
+        }
+        return false;
+    }
+
+    public function updateProject($id, array $args) {
+        $project = $this->database->table(self::TABLE_NAME)->get($id);
+        if ($project !== '') {
+            $project->update($args);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getProjectsByUser($userId) {
+        return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_USER, $userId);
+    }
+
+    public function deleteProjectOnUser($idUser) {
+        $res = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_USER, $idUser)->delete();
+        if ($res > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
