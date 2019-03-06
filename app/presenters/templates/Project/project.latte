@@ -2,16 +2,16 @@
 
 <h1 n:block=title class="text-primary text-center text-lg-left">{$project->Name}</h1>
 
-
-<div class="btn-group my-4" role="group" aria-label="Project edit">
-    <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?')" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
-    <a role="button" class="btn btn-warning" n:if="$user->isAllowed('project', 'edit')" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit</a>
-    <a role="button" class="btn btn-success" n:if="$user->isAllowed('project', 'addfile')" href="#"><i class="fas fa-plus"></i> Přidat Soubor</a>
+<div class="w-100 text-center text-lg-left">
+    <div class="btn-group my-4" role="group" aria-label="Project edit">
+        <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?')" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
+        <a role="button" class="btn btn-warning" n:if="$user->isAllowed('project', 'editdesc')" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit popis</a>
+        <a role="button" class="btn btn-success" n:if="$user->isAllowed('project', 'addfile')" href="#"><i class="fas fa-plus"></i> Přidat Soubor</a>
+    </div>
 </div>
 
-
 <div class="d-column-flex min-height w-auto">
-    <p class="text-secondary text-left">{$project->Desc}</p>
+    <p class="text-secondary text-lg-left text-center ">{$project->Desc}</p>
     <ul class="list-unstyled d-flex flex-column justify-content-around align-items-center flex-lg-row">
 
         <!--user-->
@@ -63,11 +63,24 @@
         </li>
     </ul>
 </div>
-        
-        
+
+
 <hr/>
 
 <!--files-->
+
+<ul class="list-unstyled text-center text-lg-left card">
+    <li class="d-flex flex-column">
+        <h4>Název souboru</h4>
+        <p class="mb-0">krátký popis souboru</p>
+        <em class="mb-4">pripona</em>
+        <div class="btn-group w-25 ml-auto mr-auto ml-lg-0 mr-lg-0    ">
+            <a role="button" class="btn btn-success" href="#">stahnout</a>
+            <a role="button" class="btn btn-danger" href="#">smazat</a>
+        </div>
+    </li>
+</ul>
+
 
 
 

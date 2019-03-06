@@ -9,24 +9,26 @@
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0 w-100 flex">
-            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item">
+            <li n:class="$presenter->isLinkCurrent('Homepage:default')?active, nav-item">
                 <a class="nav-link" n:href="Homepage:default">Domů <span class="sr-only">(current)</span></a>
             </li>
-            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item" n:if="$user->isAllowed('users', 'view')">
-                <a class="nav-link" n:href="Users:">Uživatelé</a>
-            </li>
-            <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item" n:if="$user->isAllowed('projects', 'view')">
+            <li n:class="$presenter->isLinkCurrent('Homepage:userprojects')?active, nav-item" n:if="$user->isAllowed('projects', 'ownview')">
                 <a class="nav-link" n:href="Homepage:userprojects">Vaše projekty</a>
             </li>
-            <li class="my-2 my-lg-0 nav-item dropdown" n:if="$user->isAllowed('projects', 'manage')">
+            <li n:class="my-2, my-lg-0, nav-item, dropdown,
+                $presenter->isLinkCurrent('Addcomponent:adduser')?active,
+                $presenter->isLinkCurrent('Addcomponent:addproject')?active,
+                $presenter->isLinkCurrent('Manageprojects:projects')?active,
+                $presenter->isLinkCurrent('Users:default')?active
+                " n:if="$user->isAllowed('projects', 'manage')">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Funkce správce
                 </a>
                 <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" n:href="Addcomponent:adduser">Přidat uživatele</a>
-                    <a class="dropdown-item" n:href="Addcomponent:addproject">Přidat projekt</a>
-                    <a class="dropdown-item" n:href="Manageprojects:projects">Spravovat projekty</a>
-                    <a class="dropdown-item" href="#">Spravovat uživatele</a>
+                    <a n:class="dropdown-item,$presenter->isLinkCurrent('Addcomponent:adduser')?active" n:if="$user->isAllowed('users', 'add')" n:href="Addcomponent:adduser">Přidat uživatele</a>
+                    <a n:class="dropdown-item,$presenter->isLinkCurrent('Addcomponent:addproject')?active" n:if="$user->isAllowed('project', 'add')" n:href="Addcomponent:addproject">Přidat projekt</a>
+                    <a n:class="dropdown-item,$presenter->isLinkCurrent('Manageprojects:projects')?active" n:if="$user->isAllowed('projects', 'manage')" n:href="Manageprojects:projects">Spravovat projekty</a>
+                    <a n:class="dropdown-item,$presenter->isLinkCurrent('Users:default')?active" n:if="$user->isAllowed('users', 'view')" n:href="Users:default">Spravovat uživatele</a>
                 </div>
             </li>
             {if $user->isLoggedIn()}
@@ -35,12 +37,12 @@
                         <i class="far fa-user"></i> {$user->getIdentity()->data[0]}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right text-left" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" n:href="User:overview">Přehled</a>
+                        <a n:class="dropdown-item,$presenter->isLinkCurrent('User:overview')?active" n:href="User:overview">Přehled</a>
                         <a class="dropdown-item" n:href="Sign:out">odhlásit</a>
                     </div>
                 </li>
             {else}
-                <li n:class="$presenter->isLinkCurrent('Homepage')?active, nav-item, ml-lg-auto">
+                <li n:class="$presenter->isLinkCurrent('Sign:in')?active, nav-item, ml-lg-auto">
                     <a class="nav-link" n:href="Sign:in">Přihlásit</a>
                 </li>
             {/if}

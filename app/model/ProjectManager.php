@@ -48,8 +48,12 @@ class ProjectManager {
         return true;
     }
 
-    public function getProjects() {
-        return $this->database->table(self::TABLE_NAME);
+    public function getProjects($year = '') {
+        if ($year == '' || !is_numeric($year)) {
+            return $this->database->table(self::TABLE_NAME);
+        }else{
+            return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_YEAR, $year);
+        }
     }
 
     /**
@@ -94,9 +98,9 @@ class ProjectManager {
 
     public function deleteProject($id) {
         $project = $this->database->table(self::TABLE_NAME)->get($id);
-        if ($project->idProject == '') {
-                $project->delete();
-                return true;
+        if ($project->idProject !== '') {
+            $project->delete();
+            return true;
         } else {
             return false;
         }
