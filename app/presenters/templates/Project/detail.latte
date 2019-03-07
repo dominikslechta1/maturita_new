@@ -6,7 +6,7 @@
     <div class="btn-group my-4" role="group" aria-label="Project edit">
         <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?')" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
         <a role="button" class="btn btn-warning" n:if="$user->isAllowed('project', 'editdesc')" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit popis</a>
-        <a role="button" class="btn btn-success" n:if="$user->isAllowed('project', 'addfile')" href="#"><i class="fas fa-plus"></i> Přidat Soubor</a>
+        <a role="button" class="btn btn-success" n:if="$user->isAllowed('project', 'addfile')" n:href="AddFile:addfile $project->idProject"><i class="fas fa-plus"></i> Přidat Soubor</a>
     </div>
 </div>
 
@@ -68,19 +68,27 @@
 <hr/>
 
 <!--files-->
-
-<ul class="list-unstyled text-center text-lg-left card">
-    <li class="d-flex flex-column">
-        <h4>Název souboru</h4>
-        <p class="mb-0">krátký popis souboru</p>
-        <em class="mb-4">pripona</em>
-        <div class="btn-group w-25 ml-auto mr-auto ml-lg-0 mr-lg-0    ">
-            <a role="button" class="btn btn-success" href="#">stahnout</a>
-            <a role="button" class="btn btn-danger" href="#">smazat</a>
-        </div>
-    </li>
-</ul>
-
+{if $user->isAllowed('files','view')}
+    {ifset $files}
+        <h2 class="text-secondary text-center text-lg-left">Soubory</h2>
+        <ul class="list-unstyled text-center text-lg-left" n:foreach="$files as $id => $file">
+            <li class="d-flex flex-column card text-center text-lg-left">
+                <h5 class="card-header">
+                    {$file->Name}
+                </h5>
+                <div class="card-body d-flex flex-column">
+                    <p class="mb-0 card-text">{$file->Desc}</p>
+                    <em class="text-muted mb-2">{$file->ref('m_filetypes','Filetype')->TileType}</em>
+                    
+                </div>
+                    <div class="btn-group card-footer">
+                        <a role="button" class="btn btn-success" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
+                        <a role="button" class="btn btn-danger" confirm="Opravdu?" n:href="DeleteFile! 'id'=> $project->idProject, 'idFile' => $id">Smazat</a>
+                    </div>
+            </li>
+        </ul>
+    {/ifset}
+{/if}
 
 
 

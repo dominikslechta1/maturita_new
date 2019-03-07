@@ -77,5 +77,9 @@ class UsersManager {
         }
         return $res;
     }
+    
+    public function getUserByEmail($email){
+        return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_EMAIL, $email);
+    } 
 
 }

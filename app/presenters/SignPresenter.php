@@ -13,10 +13,12 @@ final class SignPresenter extends BasePresenter {
      */
     private $signInFactory;
     private $user;
+    private $getEmailFormFactory;
 
-    public function __construct(Forms\SignInFormFactory $sign, \Nette\Security\User $user) {
+    public function __construct(Forms\SignInFormFactory $sign, \Nette\Security\User $user, Forms\GetEmailFormFactory $getEmailFormFactory) {
         $this->signInFactory = $sign;
         $this->user = $user;
+        $this->getEmailFormFactory = $getEmailFormFactory;
     }
 
     public function renderIn() {
@@ -27,11 +29,23 @@ final class SignPresenter extends BasePresenter {
         
     }
 
+    public function renderRenewpass() {
+        
+    }
+
     protected function createComponentSignUpForm() {
         return $this->signInFactory->create(function ($message = '') {
-                    $this->flashMessage($message,'success');
+                    $this->flashMessage($message, 'success');
                     $this->redirect('Homepage:');
                 });
+    }
+
+    protected function createComponentRenewPassForm() {
+        return $this->getEmailFormFactory->create(function ($message = '', $type = 'info') {
+                    $this->flashMessage($message, $type);
+                    //$this->redirect('Homepage:');
+                }
+        );
     }
 
     public function actionOut() {

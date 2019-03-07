@@ -1,8 +1,11 @@
 {block content}
 <h1 n:block=title>Přihlášení</h1>
 {if $user->isLoggedIn()}
+{else}
+    {control signUpForm}
+    <a class="link" n:href="Sign:renewpass">zapomenuté heslo?</a>
 {/if}
-{control signUpForm}
+
 {/block}
 
 {block scripts}

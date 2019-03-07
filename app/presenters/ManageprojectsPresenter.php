@@ -62,7 +62,7 @@ class ManageprojectsPresenter extends BasePresenter {
         } else {
             return;
         }
-        if ($res->count('*') > 0 && $this->user->isAllowed('project', 'unlocklock')) {
+        if ($res && $this->user->isAllowed('project', 'unlocklock')) {
             $res->update([
                 'Lock' => ($lock == 0) ? '1' : '0'
             ]);

@@ -61,8 +61,8 @@ class ProjectManager {
      * @param int $id
      * @return context
      */
-    public function getProjectsWhereId($param) {
-        return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $param);
+    public function getProjectsWhereId($id) {
+        return $this->database->table(self::TABLE_NAME)->get($id);
     }
 
     public function showYear($year) {

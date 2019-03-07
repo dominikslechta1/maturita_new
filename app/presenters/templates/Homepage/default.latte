@@ -19,11 +19,11 @@
     {if $projects->count('*') > 0}
     {foreach $projects as $id => $row}
         <div class="rounded border bg-white p-3 mt-3">
-            <a n:href="Project:project $id"><h2 class="text-primary">{$row->Name}</h2></a>
+            <a n:href="Project:detail $id"><h2 class="text-primary">{$row->Name}</h2></a>
             <hr />
             <p class="text-secondary" n:ifcontent>{strlen($row->Desc) > 100 ? substr($row->Desc,0,100).'....' : $row->Desc}</p>
             <div class="d-flex flex-column flex-lg-row align-items-center align-content-lg-start" n:ifcontent>
-                <a n:href="Project:project $id" class="mr-lg-5 mb-2"><button type="button" class="btn btn-info rounded">Zobrazit více</button></a>
+                <a n:href="Project:detail $id" class="mr-lg-5 mb-2"><button type="button" class="btn btn-info rounded">Zobrazit více</button></a>
                 <div n:ifcontent class="stars mr-lg-5 mb-2 d-flex align-items-center align-items-sm-left flex-column flex-lg-row">
                     <p class="ml-lg-5  mb-0">Hodnocení projektu:</p>
                     <span class="d-flex">

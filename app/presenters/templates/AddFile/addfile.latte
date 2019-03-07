@@ -1,0 +1,28 @@
+{* Latte template *}
+
+{block content}
+<h1 n:block=title class="text-dark">Přidat soubor</h1>
+{if $user->isAllowed('files','add')}
+    {control addFileFormFactory}
+{/if}
+
+{/block}
+
+{block scripts}
+<script>
+    var getFileData = function (myFile) {
+        var file = myFile.files[0];
+        var filename = file.name;
+        $('.custom-file .custom-file-label').append(filename);
+
+    };
+
+</script>
+{/block}
+{block head}
+<style>
+    .invalid-feedback{
+        display: block !important;
+    }
+</style>
+{/block}

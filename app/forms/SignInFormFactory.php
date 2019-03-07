@@ -16,7 +16,6 @@ final class SignInFormFactory {
 
     /** @var User */
     private $user;
-    private $message = '';
 
     public function __construct(FormFactory $factory, User $user) {
         $this->factory = $factory;
@@ -28,15 +27,15 @@ final class SignInFormFactory {
      */
     public function create(callable $onSuccess) {
         $form = $this->factory->create();
-        $form->addEmail('email', 'Username:')
-                ->setRequired('Please enter your username.');
+        $form->addEmail('email', 'Zadej email:')
+                ->setRequired('Prosím zadej svůj email.');
 
-        $form->addPassword('password', 'Password:')
-                ->setRequired('Please enter your password.');
+        $form->addPassword('password', 'Zadej heslo:')
+                ->setRequired('Prosím zadej heslo.');
 
-        $form->addCheckbox('remember', 'Keep me signed in');
+        $form->addCheckbox('remember', 'Zůstat přihlášen');
 
-        $form->addSubmit('send', 'Sign in');
+        $form->addSubmit('send', 'Přihlásit');
 
         $form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
 
@@ -45,8 +44,6 @@ final class SignInFormFactory {
                 $this->user->login($values->email, $values->password);
             } catch (Nette\Security\AuthenticationException $e) {
                 $form->addError('Špatné jméno nebo heslo. ');
-                $this->message = $e;
-
                 return;
             }
             $onSuccess('Byl Jsi úspěšně přihlášen.', 'success');

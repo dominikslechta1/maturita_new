@@ -32,7 +32,7 @@ final class EditProjectFormFactory {
      * @return Form
      */
     public function create(callable $onSuccess, $id) {
-        $this->project = $this->projectM->getProjectsWhereId($id)->fetch();
+        $this->project = $this->projectM->getProjectsWhereId($id);
         $form = $this->factory->create();
 
         $form->addTextArea('desc', 'Uprav popis projektu:')
@@ -57,7 +57,7 @@ final class EditProjectFormFactory {
     }
 
     public function adminCreate(callable $onSuccess, $id) {
-        $this->project = $this->projectM->getProjectsWhereId($id)->fetch();
+        $this->project = $this->projectM->getProjectsWhereId($id);
         $students = $this->userM->getStudents();
         $consultants = ['' => '---'] + $this->userM->getConsultants();
         $oponents = ['' => '---'] + $this->userM->getOponents();

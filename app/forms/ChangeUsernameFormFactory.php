@@ -48,6 +48,8 @@ final class ChangeUsernameFormFactory {
                 'Username' => $values->username
             ]);
             
+            $this->user->getIdentity()->username = $values->username;
+            
             
             $onSuccess('Úspěšně jsi změnil své uživatelské jméno.');
         };

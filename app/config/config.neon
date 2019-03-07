@@ -17,8 +17,11 @@ session:
 
 services:
 	- App\Helpers\RoleHelper
+	- App\Helpers\FileHelper
 	- App\Model\UserManager
 	- App\Model\UsersManager
+	- App\Model\FilesManager
+	- App\Model\FileTypeManager
 	- App\Model\ProjectManager
 	- App\Model\UserPrivilegesManager
 	- App\Model\PrivilegeManager
@@ -26,8 +29,11 @@ services:
 	- App\Forms\SignInFormFactory
 	- App\Forms\SignUpFormFactory
 	- App\Forms\ChangePassFormFactory
+	- App\Forms\GetEmailFormFactory
 	- App\Forms\ChangeUsernameFormFactory
 	- App\Forms\AddProjectFormFactory
 	- App\Forms\EditProjectFormFactory
+	- App\Forms\AddFileFormFactory
 	- App\Model\AuthorizatorFactory::create
 	router: App\RouterFactory::createRouter
+#	- Nette\Mail\SmtpMailer

@@ -57,7 +57,7 @@ class UserManager implements \Nette\Security\IAuthenticator {
 
         $privileges = $this->privileges->getUserPrivilege($row[self::COLUMN_ID]);
         
-        return new Nette\Security\Identity($row[self::COLUMN_ID], $privileges, [$row->Username, $row->Email]);
+        return new Nette\Security\Identity($row[self::COLUMN_ID], $privileges, ['username' => $row->Username, 'email'=> $row->Email]);
     }
 
     /**
