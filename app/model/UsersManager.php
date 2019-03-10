@@ -77,9 +77,21 @@ class UsersManager {
         }
         return $res;
     }
-    
-    public function getUserByEmail($email){
+
+    public function getUserByEmail($email) {
         return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_EMAIL, $email);
-    } 
+    }
+
+    public function insertTokken($user, $hash, $date) {
+        $count = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $user)->update([
+            'Tokken' => $hash,
+            'Tocdate' => $date
+        ]);
+        if ($count) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

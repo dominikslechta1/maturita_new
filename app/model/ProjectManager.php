@@ -24,6 +24,8 @@ class ProjectManager {
             COLUMN_PUBLIC = 'Public',
             COLUMN_DESC = 'Desc',
             COLUMN_LOCK = 'Lock',
+            COLUMN_RQFILE = 'Rqfile',
+            COLUMN_RQFILEPDF = 'RqfilePDF',
             COLUMN_SCORE = 'Score';
 
     /** @var Nette\Database\Context */
@@ -51,7 +53,7 @@ class ProjectManager {
     public function getProjects($year = '') {
         if ($year == '' || !is_numeric($year)) {
             return $this->database->table(self::TABLE_NAME);
-        }else{
+        } else {
             return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_YEAR, $year);
         }
     }
@@ -109,7 +111,7 @@ class ProjectManager {
 
     public function updateProject($id, array $args) {
         $project = $this->database->table(self::TABLE_NAME)->get($id);
-        if ($project !== '') {
+        if ($project) {
             $project->update($args);
             return true;
         } else {
@@ -128,6 +130,46 @@ class ProjectManager {
         } else {
             return false;
         }
+    }
+
+    public function userIsInProject($userId) {
+        if ($this->database->table(self::TABLE_NAME)
+                        ->whereOr([self::COLUMN_USER => $userId,
+                            self::COLUMN_CONSULTANT => $userId,
+                            self::COLUMN_OPONENT => $userId
+                        ])->count('*') > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function updateScore($id, $score) {
+        $count = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->update([
+            'Score' => $score
+        ]);
+        if ($count) {
+            return $count;
+        } else {
+            return $count;
+        }
+    }
+
+    /**
+     * remove all required files and in pdf from array
+     * @param id id of project
+     * @param array $arr
+     */
+    public function RemoveReqFilesFromArr($id, array $arr) {
+        $row = $this->database->table(self::TABLE_NAME)->get($id);
+        foreach($arr as $idk => $key){
+            if($row->Rqfile == $idk){
+                unset($arr[$idk]); 
+            }elseif($row->Rqfilepdf == $key->idFiles){
+                unset($arr[$idk]); 
+            }
+        }
+        return $arr;
     }
 
 }

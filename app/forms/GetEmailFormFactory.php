@@ -5,10 +5,9 @@ namespace App\Forms;
 use Nette;
 use Nette\Application\UI\Form;
 use App\Model\UsersManager;
-use Nette\Mail\Message;
 use Nette\Security\Passwords;
-use Latte\Engine;
-use Nette\Bridges\ApplicationLatte\UIMacros;
+use Nette\Application\UI\ITemplateFactory;
+use Nette\Application\LinkGenerator;
 
 class GetEmailFormFactory {
 
@@ -17,25 +16,32 @@ class GetEmailFormFactory {
     /** @var FormFactory */
     private $factory;
     private $usersManager;
-    private $mailer;
+
+    /** @var Nette\Application\UI\ITemplateFactory */
+    private $templateFactory;
+
+   /** @var Nette\Application\LinkGenerator */
+    private $linkGenerator;
     
-    public function __construct(FormFactory $factory, UsersManager $usersManager, \Nette\Mail\IMailer $mailer) {
+    
+    public function __construct(LinkGenerator $linkGenerator, FormFactory $factory, UsersManager $usersManager, ITemplateFactory $templateFactory) {
         $this->factory = $factory;
         $this->usersManager = $usersManager;
-        $this->mailer = $mailer;
+        $this->templateFactory = $templateFactory;
+        $this->linkGenerator = $linkGenerator;
     }
 
     /**
      * @return Form
      */
-    public function create(callable $onSuccess) {
+    public function create(callable $onSuccess, $sender) {
         $form = $this->factory->create();
         $form->addEmail('email', 'Email:')
                 ->setRequired('Please enter your username.');
 
         $form->addSubmit('send', 'odeslat');
 
-        $form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
+        $form->onSuccess[] = function (Form $form, $values) use ($onSuccess, $sender) {
             $user = $this->usersManager->getUserByEmail($values->email)->fetch();
 
             if ($user) {
@@ -43,27 +49,32 @@ class GetEmailFormFactory {
                 $now = new Nette\Utils\DateTime();
                 $hash = Passwords::hash($now . $values->email);
 
+                $res = $this->usersManager->insertTokken($user->idUser, $hash, $now);
 
-                $message = new Message();
-                $params = [
-                    'username' => $user->Username,
-                    'token' => $hash,
-                    'sitename' => 'localhost',
-                ];
-                $latte = new Engine();
-                $latte->addProvider("uiControl", $this);
-                $latte->addProvider("uiPresenter", $this);
-                UIMacros::install($latte->getCompiler());
-                $message->setFrom('noreply@Maturitniprojekty.com')
-                        ->addTo('jezancz.22@gmail.com')
-                        ->setSubject('Zapomenuté heslo')
-                        ->setHtmlBody($latte->renderToString(__DIR__ . '/rememberMail.latte', $params, null));
-                
-                
-                $this->mailer->secure = 'TSL';
-                $mail->Port = 587;
-                $this->mailer->send($message);
-                $onSuccess('Uspěšně odesláno', 'success');
+                if ($res) {
+
+                    $template = $this->createTemplate();
+
+                    $template->sitename = gethostname();
+                    $template->username = $user->idUser;
+                    $template->token = $hash;
+                    $template->setFile(__DIR__ . '/rememberMail.latte');
+
+
+
+
+                    $message = new \Nette\Mail\Message;
+                    $message->setSubject('Zapomenuté heslo')
+                            ->setFrom('Maturitní projekty <maturitni.projekty@noreply.com>')
+                            ->addTo('jezancz.22@gmail.com')
+                            ->setHtmlBody($template);
+
+                    $sender->send($message);
+
+                    $onSuccess('Email byl odeslán');
+                } else {
+                    throw new Exception('tokken nebyl uložen');
+                }
             } else {
                 $form['email']->addError('Tento email není v databázi');
                 return;
@@ -72,6 +83,13 @@ class GetEmailFormFactory {
 
 
         return $form;
+    }
+
+    protected function createTemplate() {
+        $template = $this->templateFactory->createTemplate();
+        $template->getLatte()->addProvider('uiControl', $this->linkGenerator);
+
+        return $template;
     }
 
 }

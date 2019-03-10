@@ -27,13 +27,14 @@ class AuthorizatorFactory extends \Nette\Security\Permission {
 
         $acl->deny(self::ALL, self::ALL, ['manage']);
         $acl->allow('administrator');
+        
         $acl->allow('guest', ['projects', 'project'], ['public', 'view']);
         $acl->allow('guest', ['score'], ['view']);
         $acl->deny('guest', ['files'], ['view']);
         $acl->deny('guest', 'users');
         $acl->deny('guest', ['score', 'files', 'project', 'projects'], ['ownview','edit', 'add', 'unlocklock', 'visibility', 'private', 'delete', 'addfile', 'manage']);
 
-        $acl->allow('student', ['projects', 'project'], ['editdesc', 'view', 'addfile']);
+        $acl->allow('student', ['projects', 'project'], ['editdesc', 'view', 'addfile', 'ownview']);
         $acl->deny('student', ['projects', 'project'], ['add', 'delete', 'edit', 'unlocklock', 'visibility', 'manage']);
         $acl->allow('student', ['score'], ['view']);
         $acl->deny('student', ['score'], ['edit', 'add', 'delete']);

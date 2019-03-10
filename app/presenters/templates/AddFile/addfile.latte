@@ -11,11 +11,52 @@
 {block scripts}
 <script>
     var getFileData = function (myFile) {
-        var file = myFile.files[0];
-        var filename = file.name;
-        $('.custom-file .custom-file-label').append(filename);
+        if (myFile.files) {
+            var file = myFile.files[0];
+            var filename = file.name;
+            $('.custom-file .custom-file-label').html(filename);
+        }else{
+            $('.custom-file .custom-file-label').html('');
+        }
 
     };
+
+    $('input[name=reqfile]').on('change', function () {
+        var n = $('input[name=reqfile]');
+        if (n.prop('checked') === true) {
+            $('input[name=reqfilepdf]').prop("disabled", true);
+            $('input[name=reqfilepdf]').prop('checked', false);
+            
+            $('.custom-file .custom-file-label').html({$req});
+            $('input[name=file]').removeAttr("accept");
+            $('input[name=file]').prop("accept", {$req});
+
+        } else {
+            $('input[name=reqfilepdf]').removeAttr("disabled");
+            $('input[name=file]').removeAttr("accept");
+            $('input[name=file]').prop("accept", {$allExt});
+            getFileData(document.getElementsByName('file'));
+        }
+    });
+
+
+    $('input[name=reqfilepdf]').on('change', function () {
+        var n = $('input[name=reqfilepdf]');
+        if (n.prop('checked') === true) {
+            $('input[name=reqfile]').prop("disabled", true);
+            $('input[name=reqfile]').prop('checked', false);
+            
+            
+            $('input[name=file]').removeAttr("accept");
+            $('input[name=file]').prop("accept", {$pdf});
+            $('.custom-file .custom-file-label').html({$pdf});
+        } else {
+            $('input[name=reqfile]').removeAttr("disabled");
+            $('input[name=file]').removeAttr("accept");
+            $('input[name=file]').prop("accept", {$allExt});
+            getFileData(document.getElementsByName('file'));
+        }
+    });
 
 </script>
 {/block}

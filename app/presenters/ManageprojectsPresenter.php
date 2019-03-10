@@ -15,6 +15,7 @@ class ManageprojectsPresenter extends BasePresenter {
     private $projectM;
     private $editProjectFormFactory;
     private $id;
+    private $detail;
 
     public function __construct(User $user, ProjectManager $projectM, Forms\EditProjectFormFactory $editprojectformfactory) {
         $this->user = $user;
@@ -33,21 +34,28 @@ class ManageprojectsPresenter extends BasePresenter {
         }
     }
 
-    public function renderEdit($id = '') {
+    public function renderEdit($id = '', $detail = false) {
         if ($id !== '') {
             $this->id = $id;
         } else {
             $this->flashMessage('Projekt momentálně nelze upravit.');
             $this->redirect('Homepage');
         }
+        $this->detail = $detail;
     }
 
     protected function createComponentEditProjectForm() {
+
+
         if ($this->user->isAllowed('project', 'edit')) {
-            return $this->editProjectFormFactory->adminCreate(function ($message = '', $type = 'success') {
+            return $this->editProjectFormFactory->adminCreate(function ($message = '', $type = 'success', $id, $detail) {
                         $this->flashMessage($message, $type);
-                        $this->redirect('Manageprojects:projects');
-                    }, $this->id);
+                        if ($detail) {
+                            $this->redirect('Project:detail', $id);
+                        } else {
+                            $this->redirect('Manageprojects:projects');
+                        }
+                    }, $this->detail, $this->id);
         } else {
             throw \Nette\Security\AuthenticationException;
         }
@@ -83,6 +91,13 @@ class ManageprojectsPresenter extends BasePresenter {
         }
     }
 
+    /**
+     * handle public state
+     * @param type $id
+     * @param type $public
+     * @param type $year
+     * @return type
+     */
     public function handlePublic($id, $public, $year = '') {
         if (is_numeric($id) && $id > -1) {
             $res = $this->projectM->getProjectsWhereId($id);
@@ -91,7 +106,7 @@ class ManageprojectsPresenter extends BasePresenter {
         } else {
             return;
         }
-        if ($res->count('*') > 0 && $this->user->isAllowed('project', 'visibility')) {
+        if ($res && $this->user->isAllowed('project', 'visibility')) {
             $res->update([
                 'Public' => ($public == 0) ? '1' : '0'
             ]);

@@ -39,11 +39,18 @@ class ProjectPresenter extends BasePresenter {
         $this->template->project = $this->project;
 
         if ($this->filesM->checkProjectId($id) && $this->user->isAllowed('files', 'view')) {
-            if ($this->project->Lock == 1) {
-                $this->template->files = $this->filesM->getFiles();
-            }elseif($this->project->Lock == 0){
-                $this->template->files = $this->filesM->getFilesWhereUser($this->user->getId());
+            if ($this->project->Lock == 1 || $this->user->isInRole('administrator')) {
+                $files = $this->filesM->getFiles()->fetchAll();
+                $this->template->files = $this->projectManager->RemoveReqFilesFromArr($id, $files);
+            } elseif ($this->project->Lock == 0) {
+                $files = $this->filesM->getFilesWhereUser($this->user->getId())->fetchAll();
+                $this->template->files = $this->projectManager->RemoveReqFilesFromArr($id, $files);
             }
+        }
+        if ($this->projectManager->userIsInProject($this->user->getId())) {
+            $this->template->userIsInProject = true;
+        } else {
+            $this->template->userIsInProject = false;
         }
     }
 
@@ -80,7 +87,7 @@ class ProjectPresenter extends BasePresenter {
     }
 
     public function handleDeleteFile($id, $idFile) {
-        if (is_numeric($idFile) && $this->user->isAllowed('files','delete')) {
+        if (is_numeric($idFile) && $this->user->isAllowed('files', 'delete')) {
             $fileFullName = $this->fileHelper->getFullname($idFile);
             if ($this->fileHelper->delete($idFile)) {
 

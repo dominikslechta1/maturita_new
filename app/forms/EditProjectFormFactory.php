@@ -56,7 +56,7 @@ final class EditProjectFormFactory {
         return $form;
     }
 
-    public function adminCreate(callable $onSuccess, $id) {
+    public function adminCreate(callable $onSuccess, $detail, $id) {
         $this->project = $this->projectM->getProjectsWhereId($id);
         $students = $this->userM->getStudents();
         $consultants = ['' => '---'] + $this->userM->getConsultants();
@@ -86,30 +86,31 @@ final class EditProjectFormFactory {
                 ->setEmptyValue((isset($this->project->Url)) ? $this->project->Url : '');
 
         $form->addHidden('nwm')->setDefaultValue($id);
+        $form->addHidden('nwmo')->setDefaultValue($detail);
 
         $form->addSubmit('send', 'Uložit');
 
-        $form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
+        $form->onSuccess[] = function (Form $form, $values) use ($onSuccess, $detail, $id) {
             $res = $this->projectM->updateProject($values->nwm, array(
                 'Name' => $values->name,
                 'User' => $values->user,
                 'Desc' => $values->desc,
                 'Url' => $values->url
             ));
-            if($values->consultant != ''){
+            if ($values->consultant != '') {
                 $this->projectM->updateProject($values->nwm, array(
                     'Consultant' => $values->consultant
                 ));
             }
-            if($values->oponent != ''){
+            if ($values->oponent != '') {
                 $this->projectM->updateProject($values->nwm, array(
                     'Oponent' => $values->oponent
                 ));
             }
             if ($res) {
-                $onSuccess('Projekt byl úspěšně upraven.', 'success');
+                 $onSuccess('Projekt byl úspěšně upraven.','success',$values->nwm,$values->nwmo);
             } else {
-                $onSuccess('Projekt nebyl upraven.', 'danger');
+                 $onSuccess('Projekt nebyl upraven.','danger',$values->nwm,$values->nwmo);
             }
         };
 

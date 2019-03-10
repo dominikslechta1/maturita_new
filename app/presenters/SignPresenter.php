@@ -5,6 +5,7 @@ namespace App\Presenters;
 use Tracy\Debugger;
 use App\Forms;
 use \Nette\Security\User;
+use Nette\Mail\IMailer;
 
 final class SignPresenter extends BasePresenter {
 
@@ -14,11 +15,13 @@ final class SignPresenter extends BasePresenter {
     private $signInFactory;
     private $user;
     private $getEmailFormFactory;
+    private $sender;
 
-    public function __construct(Forms\SignInFormFactory $sign, \Nette\Security\User $user, Forms\GetEmailFormFactory $getEmailFormFactory) {
+    public function __construct(IMailer $sender, Forms\SignInFormFactory $sign, \Nette\Security\User $user, Forms\GetEmailFormFactory $getEmailFormFactory) {
         $this->signInFactory = $sign;
         $this->user = $user;
         $this->getEmailFormFactory = $getEmailFormFactory;
+        $this->sender = $sender;
     }
 
     public function renderIn() {
@@ -44,7 +47,7 @@ final class SignPresenter extends BasePresenter {
         return $this->getEmailFormFactory->create(function ($message = '', $type = 'info') {
                     $this->flashMessage($message, $type);
                     //$this->redirect('Homepage:');
-                }
+                }, $this->sender
         );
     }
 

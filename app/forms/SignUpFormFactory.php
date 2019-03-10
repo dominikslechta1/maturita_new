@@ -60,7 +60,7 @@ final class SignUpFormFactory {
                 $form['email']->addError('Tento e-mail již existuje.');
                 return;
             }
-            $onSuccess();
+            $onSuccess('Uživatel úspěšně přidán.');
         };
 
         return $form;

@@ -1,12 +1,17 @@
-{block content}
+    {block content}
 
 <h1 n:block=title class="text-primary text-center text-lg-left">{$project->Name}</h1>
 
 <div class="w-100 text-center text-lg-left">
     <div class="btn-group my-4" role="group" aria-label="Project edit">
-        <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?')" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
-        <a role="button" class="btn btn-warning" n:if="$user->isAllowed('project', 'editdesc')" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit popis</a>
-        <a role="button" class="btn btn-success" n:if="$user->isAllowed('project', 'addfile')" n:href="AddFile:addfile $project->idProject"><i class="fas fa-plus"></i> Přidat Soubor</a>
+        <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?');" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
+
+        {if $user->isAllowed('project','edit')}
+            <a role="button" class="btn btn-warning" n:if="($user->isAllowed('project', 'edit') && $userIsInProject) || $user->isInRole('administrator')" n:href="Manageprojects:edit $project->idProject, true"><i class="far fa-edit"></i> Upravit projekt</a>
+        {else}
+            <a role="button" class="btn btn-warning" n:if="($user->isAllowed('project', 'editdesc') && $userIsInProject)" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit popis</a>
+        {/if}
+        <a role="button" class="btn btn-success" n:if="($user->isAllowed('project', 'addfile') && $userIsInProject) || $user->isInRole('administrator')" n:href="AddFile:addfile $project->idProject"><i class="fas fa-plus"></i> Přidat Soubor</a>
     </div>
 </div>
 
@@ -41,9 +46,9 @@
         </li>
 
         <!--Score-->
-        <li class="d-flex align-items-center"><p class="m-0 font-weight-bold">Hodnocení projektu:</p>
+        <li class="d-flex align-items-center"><a class="m-0 font-weight-bold" href="#" data-toggle="modal" data-target="#ScoreModal">Hodnocení projektu:</a>
             <span class="d-flex">
-                {var $res = 3.5}
+                {var $res = $project->Score}
                 {for $i = 0; $i < 5; $i++}
                     {if ($res-1) >= 0}
                         {php $res--}
@@ -56,7 +61,65 @@
                     {/if}
                 {/for}
             </span>
+
         </li>
+
+        <!-- Modal -->
+        <div class="modal fade" id="ScoreModal" tabindex="-1" role="dialog" aria-labelledby="ScoreModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Hodnocení projektu</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="parent">
+                            <span class="star star-1">
+                                <span class="star-falf half-1"></span>
+                                <span class="star-falf full-1"></span>
+                                <span class="star-ico ico-1"><i class="far fa-star text-warning"></i></span>
+
+                            </span>
+                            <span class="star star-2">
+                                <span class="star-falf half-2"></span>
+                                <span class="star-falf full-2"></span>
+                                <span class="star-ico ico-2"><i class="far fa-star text-warning"></i></span>
+                            </span>
+                            <span class="star star-3">
+                                <span class="star-falf half-3"></span>
+                                <span class="star-falf full-3"></span>
+                                <span class="star-ico ico-3"><i class="far fa-star text-warning"></i></span>
+                            </span>
+                            <span class="star star-4">
+                                <span class="star-falf half-4"></span>
+                                <span class="star-falf full-4"></span>
+                                <span class="star-ico ico-4"><i class="far fa-star text-warning"></i></span>
+                            </span>
+                            <span class="star star-5">
+                                <span class="star-falf half-5"></span>
+                                <span class="star-falf full-5"></span>
+                                <span class="star-ico ico-5"><i class="far fa-star text-warning"></i></span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <form action="{link Score:add $project->idProject,}" method="get" class="form">
+                            <input type="range" name="score" max="5" min="0" value="0" step=0.5 class="d-none" />
+                            <button type="submit" class="btn btn-primary">Ohodnotit</button>
+                        </form>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zavřít</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
         <li>
             <strong>Rok:&nbsp;</strong>
             {$project->Year}
@@ -68,7 +131,7 @@
 <hr/>
 
 <!--files-->
-{if $user->isAllowed('files','view')}
+{if $user->isAllowed('files','view') && $userIsInProject || $user->isInRole('administrator')}
     {ifset $files}
         <h2 class="text-secondary text-center text-lg-left">Soubory</h2>
         <ul class="list-unstyled text-center text-lg-left" n:foreach="$files as $id => $file">
@@ -79,12 +142,12 @@
                 <div class="card-body d-flex flex-column">
                     <p class="mb-0 card-text">{$file->Desc}</p>
                     <em class="text-muted mb-2">{$file->ref('m_filetypes','Filetype')->TileType}</em>
-                    
+
                 </div>
-                    <div class="btn-group card-footer">
-                        <a role="button" class="btn btn-success" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
-                        <a role="button" class="btn btn-danger" confirm="Opravdu?" n:href="DeleteFile! 'id'=> $project->idProject, 'idFile' => $id">Smazat</a>
-                    </div>
+                <div class="btn-group card-footer">
+                    <a role="button" class="btn btn-success" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
+                    <a role="button" class="btn btn-danger" onclick="return confirm('Opravdu?');" n:href="DeleteFile! 'id'=> $project->idProject, 'idFile' => $id">Smazat</a>
+                </div>
             </li>
         </ul>
     {/ifset}
@@ -93,8 +156,6 @@
 
 
 {/block}
-{block scripts}
-{/block}
 
 
 {block head}
@@ -102,5 +163,168 @@
     .min-height{
         min-height: 160px;
     }
+
+
+    .parent{
+        height: var(--height);
+        position: relative;
+        width: calc(var(--width) * 5);
+    }
+    .star{
+        width: var(--width);
+        height: var(--height); 
+        position: relative;
+        margin: 0 1px;
+
+    }
+    .star-falf{
+        position: absolute;
+        width: calc(var(--width) / 2);
+        height: var(--height);
+        top:0;
+        z-index: 20;
+    }
+
+    .star-ico{
+        position: absolute;
+        top:0;
+        pointer-events: none;
+        font-size: var(--width);
+
+        z-index: 10;
+    }
+
+
+
+    .half-1{
+        left: 0px;
+    }
+    .full-1{
+        left: calc(var(--width) / 2);
+    }
+    .ico-1{
+        left: 0px;
+    }
+
+    .half-2{
+        left: var(--width);
+    }
+    .full-2{
+        left: calc(var(--width) + calc(var(--width) / 2));
+    }
+    .ico-2{
+        left: var(--width);
+    }
+
+    .half-3{
+        left: calc(var(--width) * 2);
+    }
+    .full-3{
+        left: calc(calc(var(--width) * 3) - calc(var(--width) / 2));
+    }
+    .ico-3{
+        left: calc(var(--width) * 2);
+    }
+
+    .half-4{
+        left: calc(var(--width) * 3);
+    }
+    .full-4{
+        left: calc(calc(var(--width) * 4) - calc(var(--width) / 2));
+    }
+    .ico-4{
+        left: calc(var(--width) * 3);
+    }
+
+    .half-5{
+        left: calc(var(--width) * 4);
+    }
+    .full-5{
+        left: calc(calc(var(--width) * 5) - calc(var(--width) / 2))
+    }
+    .ico-5{
+        left: calc(var(--width) * 4);
+    }
+
+    :root{
+        --width: 20px;
+        --height: 20px;
+    }
 </style>
+{/block}
+
+{block scripts}
+<script>
+
+    $(document).ready(function () {
+        $('.parent').mousedown(function (e) {
+            $(document).mousemove(score);
+        });
+
+        $('.parent').mouseup(function () {
+            $(document).off("mousemove");
+        });
+
+        $('.parent').on("mousedown", score);
+
+    });
+    function score(e) {
+        console.log(e);
+        var clsname = e.target.classList[1];
+
+        //half
+        if (clsname.includes("half")) {
+            var num = getSecondPart(clsname);
+
+
+            //evrythingsmaller
+            biggerSmaller(num);
+
+            //range input
+            $('input[name="score"]').val(num - 1 + '.5');
+
+            //actual star
+            $(".ico-" + num).html('<i class="fas fa-star-half-alt text-warning"></i>');
+
+
+            //full
+        } else if (clsname.includes("full")) {
+            var num = getSecondPart(clsname);
+
+
+            //evrythingsmaller
+            biggerSmaller(num);
+
+
+            //range input
+            $('input[name="score"]').val(num);
+
+
+            //actual star
+            $(".ico-" + num).html('<i class="fas fa-star text-warning"></i>');
+        }
+
+
+
+    }
+
+    $(document).on('dragstart', function (event) {
+        event.preventDefault();
+    });
+
+
+    // function you can use:
+    function getSecondPart(str) {
+        return str.split('-')[1];
+    }
+//set stars for bigger and smaller stars
+    function biggerSmaller(num) {
+        for (var i = num; i > -1; i--) {
+            $(".ico-" + i).html('<i class="fas fa-star text-warning"></i>');
+        }
+        for (var i = num; i < 6; i++) {
+            $(".ico-" + i).html('<i class="far fa-star text-warning"></i>');
+        }
+    }
+</script>
 {/block}

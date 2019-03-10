@@ -59,18 +59,7 @@ class FilesManager {
         return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $id)->delete();
     }
 
-    /**
-     * gets all possible files extensions
-     * @return array
-     */
-    public function acceptedExtension() {
-        $n = $this->database->table('m_filetypes')->fetchAll();
-        $field = array();
-        foreach ($n as $id => $item) {
-            array_push($field, $item->TileType);
-        }
-        return $field;
-    }
+
 
     /**
      * insert files to database
@@ -93,5 +82,9 @@ class FilesManager {
     }
     public function getFilesWhereUser($user){
         return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_USER, $user);
+    }
+    
+    public function getMaxId(){
+        return $this->database->table(self::TABLE_NAME)->max(self::COLUMN_ID);
     }
 }

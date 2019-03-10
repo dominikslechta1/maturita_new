@@ -10,10 +10,10 @@
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0 w-100 flex">
             <li n:class="$presenter->isLinkCurrent('Homepage:default')?active, nav-item">
-                <a class="nav-link" n:href="Homepage:default">Domů <span class="sr-only">(current)</span></a>
+                <a class="nav-link" n:href="Homepage:default">Domů<span class="sr-only">(current)</span></a>
             </li>
             <li n:class="$presenter->isLinkCurrent('Homepage:userprojects')?active, nav-item" n:if="$user->isAllowed('projects', 'ownview')">
-                <a class="nav-link" n:href="Homepage:userprojects">Vaše projekty</a>
+                <a class="nav-link" n:href="Homepage:userprojects">Tvé projekty</a>
             </li>
             <li n:class="my-2, my-lg-0, nav-item, dropdown,
                 $presenter->isLinkCurrent('Addcomponent:adduser')?active,
