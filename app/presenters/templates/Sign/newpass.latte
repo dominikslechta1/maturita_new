@@ -1,0 +1,14 @@
+{* Latte template *}
+
+
+{block content}
+<h1 n:block=title class="text-dark">Nové heslo</h1>
+{if $can}
+{control newPassForm}
+{else}
+    <p>tento požadavek je již po lhůtě provedení (24 hodin)</p>
+{/if}
+{/block}
+
+{block scripts}
+{/block}
