@@ -37,6 +37,10 @@ class UsersManager {
     public function getUsers() {
         return $this->database->table(self::TABLE_NAME)->select('*');
     }
+    
+    public function getUserById($id){
+        return $this->database->table(self::TABLE_NAME)->get($id);
+    }
 
     public function deleteUser($id) {
         $user = $this->database->table(self::TABLE_NAME)->get($id);
@@ -92,6 +96,12 @@ class UsersManager {
         } else {
             return false;
         }
+    }
+    
+    public function updatePass($hash, $user){
+        return $this->database->table(self::TABLE_NAME)->get($user)->update([
+            self::COLUMN_PASSWORD_HASH => $hash
+        ]);
     }
 
 }

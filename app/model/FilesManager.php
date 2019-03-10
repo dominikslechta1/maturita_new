@@ -52,7 +52,10 @@ class FilesManager {
     }
 
     public function whereId($id) {
-        return $this->database->table(self::TABLE_NAME)->where($id);
+        if(is_null($id)){
+            return;
+        }
+        return $this->database->table(self::TABLE_NAME)->get($id);
     }
     
     public function delete($id) {
@@ -87,4 +90,5 @@ class FilesManager {
     public function getMaxId(){
         return $this->database->table(self::TABLE_NAME)->max(self::COLUMN_ID);
     }
+    
 }

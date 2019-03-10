@@ -48,8 +48,9 @@ class GetEmailFormFactory {
                 //user exists then send mail
                 $now = new Nette\Utils\DateTime();
                 $hash = Passwords::hash($now . $values->email);
+                $new_time = date_add($now, date_interval_create_from_date_string('24 hours'));
 
-                $res = $this->usersManager->insertTokken($user->idUser, $hash, $now);
+                $res = $this->usersManager->insertTokken($user->idUser, $hash, $new_time);
 
                 if ($res) {
 
@@ -66,12 +67,14 @@ class GetEmailFormFactory {
                     $message = new \Nette\Mail\Message;
                     $message->setSubject('Zapomenuté heslo')
                             ->setFrom('Maturitní projekty <maturitni.projekty@noreply.com>')
-                            ->addTo('jezancz.22@gmail.com')
+                            ->addTo($user->Email)
                             ->setHtmlBody($template);
-
+                    try{
                     $sender->send($message);
-
-                    $onSuccess('Email byl odeslán');
+                    }catch(\Nette\Mail\SendException $e){
+                        $onSuccess('Email nebyl odeslán', 'danger');
+                    }
+                    $onSuccess('Email byl odeslán','success');
                 } else {
                     throw new Exception('tokken nebyl uložen');
                 }

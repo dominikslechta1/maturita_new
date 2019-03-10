@@ -39,12 +39,39 @@ class ProjectPresenter extends BasePresenter {
         $this->template->project = $this->project;
 
         if ($this->filesM->checkProjectId($id) && $this->user->isAllowed('files', 'view')) {
+
+            //template files
             if ($this->project->Lock == 1 || $this->user->isInRole('administrator')) {
                 $files = $this->filesM->getFiles()->fetchAll();
                 $this->template->files = $this->projectManager->RemoveReqFilesFromArr($id, $files);
             } elseif ($this->project->Lock == 0) {
                 $files = $this->filesM->getFilesWhereUser($this->user->getId())->fetchAll();
                 $this->template->files = $this->projectManager->RemoveReqFilesFromArr($id, $files);
+            }
+
+            //template required files
+            if ($this->project->Lock == 1 || $this->user->isInRole('administrator')) {
+                $rqfileid = $this->projectManager->getRqFiles($id)->Rqfile;
+                $res = array();
+                if ($rqfileid) {
+                    $rqfiles = $this->filesM->whereId($rqfileid);
+                    array_push($res, $rqfiles);
+                }
+
+                $rqfilepdfid = $this->projectManager->getRqFiles($id)->RqfilePDF;
+
+                if ($rqfilepdfid) {
+                    $rqfilespdf = $this->filesM->whereId($rqfilepdfid);
+                    array_push($res, $rqfilespdf);
+                    
+                }
+                $this->template->rqfiles = $res;
+
+                
+            } elseif ($this->project->Lock == 0) {
+                $rqfiles = $this->filesM->whereId($this->projectManager->getRqFiles($id)->Rqfile);
+                $rqfilespdf = $this->filesM->whereId($this->projectManager->getRqFiles($id)->RqfilePDF);
+                $this->template->rqfiles = array($rqfiles, $rqfilespdf);
             }
         }
         if ($this->projectManager->userIsInProject($this->user->getId())) {
@@ -75,6 +102,19 @@ class ProjectPresenter extends BasePresenter {
             }
         } else {
             $this->flashMessage('momentálně nelze smazat projekt');
+        }
+    }
+
+    public function handleDeleteRqFile($id) {
+        if ($this->user->isLoggedIn() && $this->user->isAllowed('project', 'delete')) {
+            $row = $this->projectManager->nullRqFileId($id);
+            if ($row) {
+                $this->flashMessage('Soubor smazán.', 'success');
+                $this->redrawControl('rqfiles');
+            } else {
+                $this->flashMessage('Soubor nebyl smazán', 'danger');
+                $this->redrawControl('rqfiles');
+            }
         }
     }
 

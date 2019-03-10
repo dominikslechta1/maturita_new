@@ -43,7 +43,7 @@ final class ChangePassFormFactory {
                 ->addRule($form::MIN_LENGTH, null, self::PASSWORD_MIN_LENGTH);
 
 
-        $form->addPassword('rep_password', 'Vytvoř si heslo:')
+        $form->addPassword('rep_password', 'Opakuj si heslo:')
                 ->setOption('description', sprintf('zadej minimálně %d znaků', self::PASSWORD_MIN_LENGTH))
                 ->setRequired('Prosím zadej znovu nové heslo')
                 ->addRule($form::MIN_LENGTH, null, self::PASSWORD_MIN_LENGTH)

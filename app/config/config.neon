@@ -30,6 +30,7 @@ services:
 	- App\Forms\SignUpFormFactory
 	- App\Forms\ChangePassFormFactory
 	- App\Forms\GetEmailFormFactory
+	- App\Forms\NewPassFormFactory
 	- App\Forms\ChangeUsernameFormFactory
 	- App\Forms\AddProjectFormFactory
 	- App\Forms\EditProjectFormFactory

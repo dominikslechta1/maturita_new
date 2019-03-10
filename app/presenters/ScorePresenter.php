@@ -18,7 +18,7 @@ final class ScorePresenter extends BasePresenter {
                 $this->flashMessage('Hodnocení bylo uloženo.','success');
                 $this->redirect('Project:detail', $id);
             }else{
-                $this->flashMessage('Hodnocení nebylo uloženo.','danger');
+                $this->flashMessage('Hodnocení nebylo uloženo nebo je stejné.','danger');
                 $this->redirect('Project:detail', $id);
             }
         }

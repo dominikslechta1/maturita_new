@@ -162,14 +162,34 @@ class ProjectManager {
      */
     public function RemoveReqFilesFromArr($id, array $arr) {
         $row = $this->database->table(self::TABLE_NAME)->get($id);
-        foreach($arr as $idk => $key){
-            if($row->Rqfile == $idk){
-                unset($arr[$idk]); 
-            }elseif($row->Rqfilepdf == $key->idFiles){
-                unset($arr[$idk]); 
+        foreach ($arr as $idk => $key) {
+            if ($row->Rqfile == $idk) {
+                unset($arr[$idk]);
+            } elseif ($row->Rqfilepdf == $key->idFiles) {
+                unset($arr[$idk]);
             }
         }
         return $arr;
+    }
+
+    public function getRqFiles($id) {
+        return $this->database->table(self::TABLE_NAME)->select(self::COLUMN_RQFILE . ', ' . self::COLUMN_RQFILEPDF)->get($id);
+    }
+
+    public function nullRqFileId($id) {
+        $row = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_RQFILE, $id);
+        if ($row) {
+            $row->update([
+                self::COLUMN_RQFILE => 'NULL'
+            ]);
+        } else {
+            $row = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_RQFILEPDF, $id);
+            if($row){
+                $row->update([
+                self::COLUMN_RQFILEPDF => 'NULL'
+                ]);
+            }
+        }
     }
 
 }

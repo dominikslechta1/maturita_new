@@ -40,7 +40,7 @@ final class FileHelper {
         }
     }
     public function getFullname($id){
-        $file = $this->filesManager->whereId($id)->fetch();
+        $file = $this->filesManager->whereId($id);
         return $file->Hash . $file->ref('m_filetypes', 'Filetype')->TileType;
     }
 }

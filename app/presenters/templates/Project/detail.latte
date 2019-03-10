@@ -1,4 +1,4 @@
-    {block content}
+{block content}
 
 <h1 n:block=title class="text-primary text-center text-lg-left">{$project->Name}</h1>
 
@@ -129,6 +129,36 @@
 
 
 <hr/>
+
+
+<!--required files-->
+
+{if $user->isAllowed('files','view') && $userIsInProject || $user->isInRole('administrator')}
+    {ifset $rqfiles}
+        {snippet rqfiles}
+            <h2 class="text-secondary text-center text-lg-left">Požadované soubory</h2>
+            <ul class="list-unstyled text-center text-lg-left" n:foreach="$rqfiles as $id => $file">
+                
+                <li class="d-flex flex-column card text-center text-lg-left">
+                    <h5 class="card-header">
+                        {$file->Name}
+                    </h5>
+                    <div class="card-body d-flex flex-column">
+                        <p class="mb-0 card-text">{$file->Desc}</p>
+                        <em class="text-muted mb-2">{$file->ref('m_filetypes','Filetype')->TileType}</em>
+
+                    </div>
+                    <div class="btn-group card-footer">
+                        <a role="button" class="btn btn-success" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
+                        <a role="button" class="btn btn-danger" onclick="return confirm('Opravdu?');" n:href="DeleteRqFile! 'projectId'=> $project->idProject, 'id' => $id">Smazat</a>
+                    </div>
+                </li>
+            </ul>
+        {/snippet}
+    {/ifset}
+{/if}
+
+<div class="mb-5"></div>
 
 <!--files-->
 {if $user->isAllowed('files','view') && $userIsInProject || $user->isInRole('administrator')}
