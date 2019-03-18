@@ -77,7 +77,7 @@
                         <a class="btn btn-info ajax" n:if="$user->isAllowed('project','visibility')" role="button" n:href="Public! 'id' => $id, 'public' => $row->Public">{$row->Public == '1'? 'Skrýt':'Zveřejnit'}</a>
                         <a class="btn btn-dark ajax" n:if="$user->isAllowed('project','unlocklock')" role="button" n:href="Lock! 'id' => $id, 'lock' => $row->Lock">{$row->Lock == '1'? 'Odemknout':'Zamknout'}</a>
                         <a class="btn btn-warning ajax" n:if="$user->isAllowed('project','edit')" role="button" n:href="Manageprojects:edit $id">Upravit</a>
-                        <a class="btn btn-danger ajax" n:if="$user->isAllowed('project','delete')" confirm="opravdu?" role="button" n:href="Delete! 'id' => $id">Smazat</a>
+                        <a class="btn btn-danger ajax" n:if="$user->isAllowed('project','delete')" onclick="confirm('Opravdu?')" role="button" n:href="Delete! 'id' => $id">Smazat</a>
 
                     </div>
                 </div>

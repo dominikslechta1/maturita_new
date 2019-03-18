@@ -103,5 +103,25 @@ class UsersManager {
             self::COLUMN_PASSWORD_HASH => $hash
         ]);
     }
+    
+    
+    /**
+     * 
+     * @param type $userid
+     * @param array $args
+     */
+    public function update($userid, array $args){
+        $row = $this->database->table(self::TABLE_NAME)->get($userid);
+        if($row){
+            $res = $row->update($args);
+            if($res){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
 
 }

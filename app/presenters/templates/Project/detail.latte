@@ -1,5 +1,9 @@
 {block content}
 
+
+
+<p class="font-weight-bold alert alert-danger" n:if="$project->Lock == 1 && !$user->isInRole('guest') && $userIsInProject" role="alert">Projekt byl uzamčen a již nelze přidávat další soubory ani upravovat projekt</p>
+
 <h1 n:block=title class="text-primary text-center text-lg-left">{$project->Name}</h1>
 
 <div class="w-100 text-center text-lg-left">
@@ -7,11 +11,12 @@
         <a role="button" class="btn btn-danger" n:if="$user->isAllowed('project', 'delete')" onclick="return confirm('Opravdu?');" n:href="delete! 'id' => $project->idProject"><i class="far fa-trash-alt"></i> Smazat</a>
 
         {if $user->isAllowed('project','edit')}
-            <a role="button" class="btn btn-warning" n:if="($user->isAllowed('project', 'edit') && $userIsInProject) || $user->isInRole('administrator')" n:href="Manageprojects:edit $project->idProject, true"><i class="far fa-edit"></i> Upravit projekt</a>
+            <a role="button" class="btn btn-warning" n:if="($user->isAllowed('project', 'edit') && $userIsInProject)  && $project->Lock == 0 || $user->isInRole('administrator')" n:href="Manageprojects:edit $project->idProject, true"><i class="far fa-edit"></i> Upravit projekt</a>
         {else}
-            <a role="button" class="btn btn-warning" n:if="($user->isAllowed('project', 'editdesc') && $userIsInProject)" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit popis</a>
+            <a role="button" class="btn btn-warning" n:if="($user->isAllowed('project', 'editdesc') && $userIsInProject) && $project->Lock == 0" n:href="Project:edit $project->idProject"><i class="far fa-edit"></i> Upravit</a>
         {/if}
-        <a role="button" class="btn btn-success" n:if="($user->isAllowed('project', 'addfile') && $userIsInProject) || $user->isInRole('administrator')" n:href="AddFile:addfile $project->idProject"><i class="fas fa-plus"></i> Přidat Soubor</a>
+        <a role="button" class="btn btn-success" n:if="(($user->isAllowed('project', 'addfile') && $userIsInProject) && ($project->Lock == 0 || $user->isAllowed('files','addafterlock')) ) || $user->isInRole('administrator')" n:href="AddFile:addfile $project->idProject"><i class="fas fa-plus"></i> Přidat Soubor</a>
+
     </div>
 </div>
 
@@ -44,9 +49,13 @@
                 neurčeno
             {/ifset}
         </li>
-
         <!--Score-->
-        <li class="d-flex align-items-center"><a class="m-0 font-weight-bold" href="#" data-toggle="modal" data-target="#ScoreModal">Hodnocení projektu:</a>
+        <li class="d-flex align-items-center">
+            {if (!$user->isInRole('administrator')) && ($project->Lock == 0 && $user->isAllowed('score','add') && $userIsInProject || (($user->isAllowed('score','addafterlock') && $userIsInProject)))}
+                <a class="m-0 font-weight-bold" href="#" data-toggle="modal" data-target="#ScoreModal">Hodnocení projektu:</a>
+            {else}
+                <p class="m-0 font-weight-bold">Hodnocení projektu:</p>
+            {/if}
             <span class="d-flex">
                 {var $res = $project->Score}
                 {for $i = 0; $i < 5; $i++}
@@ -138,7 +147,7 @@
         {snippet rqfiles}
             <h2 class="text-secondary text-center text-lg-left">Požadované soubory</h2>
             <ul class="list-unstyled text-center text-lg-left" n:foreach="$rqfiles as $id => $file">
-                
+                {ifset $file->Name}
                 <li class="d-flex flex-column card text-center text-lg-left">
                     <h5 class="card-header">
                         {$file->Name}
@@ -149,10 +158,11 @@
 
                     </div>
                     <div class="btn-group card-footer">
-                        <a role="button" class="btn btn-success" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
-                        <a role="button" class="btn btn-danger" onclick="return confirm('Opravdu?');" n:href="DeleteRqFile! 'projectId'=> $project->idProject, 'id' => $id">Smazat</a>
+                        <a role="button" class="btn btn-success" n:if="$user->isAllowed('files','download')" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
+                        <a role="button" class="btn btn-danger" n:if="$user->isAllowed('files','delete') && $project->Lock == 0" onclick="return confirm('Opravdu?');" n:href="DeleteRqFile! 'projectId'=> $project->idProject, 'id' => $id">Smazat</a>
                     </div>
                 </li>
+                {/ifset}
             </ul>
         {/snippet}
     {/ifset}
@@ -161,7 +171,7 @@
 <div class="mb-5"></div>
 
 <!--files-->
-{if $user->isAllowed('files','view') && $userIsInProject || $user->isInRole('administrator')}
+{if $user->isAllowed('files','view') || $user->isInRole('administrator')}
     {ifset $files}
         <h2 class="text-secondary text-center text-lg-left">Soubory</h2>
         <ul class="list-unstyled text-center text-lg-left" n:foreach="$files as $id => $file">
@@ -175,8 +185,8 @@
 
                 </div>
                 <div class="btn-group card-footer">
-                    <a role="button" class="btn btn-success" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
-                    <a role="button" class="btn btn-danger" onclick="return confirm('Opravdu?');" n:href="DeleteFile! 'id'=> $project->idProject, 'idFile' => $id">Smazat</a>
+                    <a role="button" class="btn btn-success" n:if="$user->isAllowed('files','download')" download="{$file->Name}{$file->ref('m_filetypes','Filetype')->TileType}" href="{$basePath}/files/{$file->Hash}{$file->ref('m_filetypes','Filetype')->TileType}">Stáhnout</a>
+                    <a role="button" class="btn btn-danger" n:if="($user->isAllowed('files','delete') && $project->Lock == 0 && $userIsInProject) || $user->isInRole('administrator')" onclick="return confirm('Opravdu?');" n:href="DeleteFile! 'id'=> $project->idProject, 'idFile' => $id">Smazat</a>
                 </div>
             </li>
         </ul>

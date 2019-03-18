@@ -1,0 +1,12 @@
+parameters:
+database:
+    dsn: 'mysql:host=localhost;dbname=maturita'
+    user: dominik
+    password: root
+
+mail:
+    smtp: true
+    host: smtp.gmail.com
+    secure: ssl
+    username: dominikslechta.1@gmail.com
+    password: Jezula248

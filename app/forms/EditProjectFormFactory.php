@@ -101,11 +101,15 @@ final class EditProjectFormFactory {
                 $this->projectM->updateProject($values->nwm, array(
                     'Consultant' => $values->consultant
                 ));
+            }else{
+                $this->projectM->query('update `m_projects` SET `Consultant` = NULL WHERE `idProject` = ?', $values->nwm);
             }
             if ($values->oponent != '') {
                 $this->projectM->updateProject($values->nwm, array(
                     'Oponent' => $values->oponent
                 ));
+            }else{
+                $this->projectM->query('update `m_projects` SET `Oponent` = NULL WHERE `idProject` = ?', $values->nwm);
             }
             if ($res) {
                  $onSuccess('Projekt byl úspěšně upraven.','success',$values->nwm,$values->nwmo);

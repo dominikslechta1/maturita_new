@@ -33,11 +33,11 @@ class HomepagePresenter extends BasePresenter {
 
     public function renderDefault() {
         if (!isset($this->template->projects)) {
-            $this->template->projects = $this->roleH->GetProjectsByRoleAndVisible();
+            $this->template->projects = $this->roleH->GetProjectsByVisible();
             //$this->template->projects = $this->projectM->getProjects()->select('*');
         }
         if (!isset($this->template->years)) {
-            $this->template->years = $this->projectM->getYears()->select('*');
+            $this->template->years = $this->projectM->getYears()->where('Public', 1);
         }
     }
     public function renderUserprojects(){
@@ -65,7 +65,7 @@ class HomepagePresenter extends BasePresenter {
 //    }
 
     public function handleYear($year = '---') {
-        $this->template->projects = $this->roleH->GetProjectsByRoleAndVisible($year);
+        $this->template->projects = $this->roleH->GetProjectsByVisible($year);
         $this->template->curyear = $year;
         $this->redrawControl('projects');
     }

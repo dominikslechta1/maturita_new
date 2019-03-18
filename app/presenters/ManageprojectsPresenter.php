@@ -7,6 +7,7 @@ use App\Forms;
 use \Nette\Security\User;
 use App\Model\ProjectManager;
 use Nette\Application\UI\Form;
+use App\Model\FilesManager;
 
 class ManageprojectsPresenter extends BasePresenter {
 
@@ -16,11 +17,13 @@ class ManageprojectsPresenter extends BasePresenter {
     private $editProjectFormFactory;
     private $id;
     private $detail;
+    private $filesManager;
 
-    public function __construct(User $user, ProjectManager $projectM, Forms\EditProjectFormFactory $editprojectformfactory) {
+    public function __construct(FilesManager $filesManager, User $user, ProjectManager $projectM, Forms\EditProjectFormFactory $editprojectformfactory) {
         $this->user = $user;
         $this->projectM = $projectM;
         $this->editProjectFormFactory = $editprojectformfactory;
+        $this->filesManager = $filesManager;
     }
 
     public function renderProjects() {
@@ -30,7 +33,7 @@ class ManageprojectsPresenter extends BasePresenter {
             //$this->template->projects = $this->projectM->getProjects()->select('*');
         }
         if (!isset($this->template->years)) {
-            $this->template->years = $this->projectM->getYears()->select('*');
+            $this->template->years = $this->projectM->getYears();
         }
     }
 
@@ -129,6 +132,7 @@ class ManageprojectsPresenter extends BasePresenter {
 
     public function handleDelete($id = -1) {
         if ($this->user->isLoggedIn() && $this->user->isAllowed('project', 'delete') && $id > -1) {
+            $this->filesManager->deleteWhereProjectId($id);
             if ($this->projectM->deleteProject($id)) {
                 $this->flashMessage('Projekt byl úspěšně smazán.', 'success');
                 $this->redrawControl('projects');

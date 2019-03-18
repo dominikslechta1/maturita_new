@@ -30,7 +30,7 @@ class AuthorizatorFactory extends \Nette\Security\Permission {
         
         $acl->allow('guest', ['projects', 'project'], ['public', 'view']);
         $acl->allow('guest', ['score'], ['view']);
-        $acl->deny('guest', ['files'], ['view']);
+        $acl->deny('guest', ['files'], ['view','download']);
         $acl->deny('guest', 'users');
         $acl->deny('guest', ['score', 'files', 'project', 'projects'], ['ownview','edit', 'add', 'unlocklock', 'visibility', 'private', 'delete', 'addfile', 'manage']);
 
@@ -38,10 +38,10 @@ class AuthorizatorFactory extends \Nette\Security\Permission {
         $acl->deny('student', ['projects', 'project'], ['add', 'delete', 'edit', 'unlocklock', 'visibility', 'manage']);
         $acl->allow('student', ['score'], ['view']);
         $acl->deny('student', ['score'], ['edit', 'add', 'delete']);
-        $acl->allow('student', ['files'], ['view', 'edit', 'add', 'delete']);
+        $acl->allow('student', ['files'], ['view', 'edit', 'add', 'delete', 'download']);
         $acl->deny('student', ['users'], ['add', 'edit', 'view', 'delete']);
 
-        $acl->allow('consultant', ['score'], ['add', 'edit', 'delete']);
+        $acl->allow('consultant', ['score', 'files'], ['add', 'edit', 'delete', 'addafterlock']);
 
 
 

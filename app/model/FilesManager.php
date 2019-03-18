@@ -91,4 +91,13 @@ class FilesManager {
         return $this->database->table(self::TABLE_NAME)->max(self::COLUMN_ID);
     }
     
+    public function deleteWhereProjectId($projectId){
+        $row = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_PROJECT, $projectId)->delete();
+        if($row){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
 }

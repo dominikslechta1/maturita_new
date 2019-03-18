@@ -55,7 +55,7 @@ final class SignUpFormFactory {
 
         $form->onSuccess[] = function (Form $form, $values) use ($onSuccess) {
             try {
-                $this->userManager->add($values->firstname, $values->firstname, $values->email, $values->password, $values->roles);
+                $this->userManager->add($values->firstname, $values->surname, $values->email, $values->password, $values->roles);
             } catch (\Nette\Database\UniqueConstraintViolationException $e) {
                 $form['email']->addError('Tento e-mail již existuje.');
                 return;

@@ -65,7 +65,10 @@ class ProjectPresenter extends BasePresenter {
                     array_push($res, $rqfilespdf);
                     
                 }
-                $this->template->rqfiles = $res;
+                if($res !== array()){
+                    $this->template->rqfiles = $res;
+                }
+                
 
                 
             } elseif ($this->project->Lock == 0) {
@@ -74,7 +77,10 @@ class ProjectPresenter extends BasePresenter {
                 $this->template->rqfiles = array($rqfiles, $rqfilespdf);
             }
         }
-        if ($this->projectManager->userIsInProject($this->user->getId())) {
+        
+        
+        //user is in project
+        if ($this->user->isLoggedIn() && $this->projectManager->userIsInProject($this->user->getId(),$id)) {
             $this->template->userIsInProject = true;
         } else {
             $this->template->userIsInProject = false;
@@ -122,7 +128,7 @@ class ProjectPresenter extends BasePresenter {
 
         return $this->EditProjectFormFactory->create(function ($message = '', $type = 'info', $id) {
                     $this->flashMessage($message, $type);
-                    $this->redirect('Project:project', $id);
+                    $this->redirect('Project:detail', $id);
                 }, $this->id);
     }
 

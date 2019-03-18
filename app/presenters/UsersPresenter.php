@@ -2,32 +2,53 @@
 
 namespace App\Presenters;
 
-use App\Forms;
 use \Nette\Security\User;
 use Tracy\Debugger;
 use App\Model\UsersManager;
+use App\Forms\EditUserFormFactory;
+use App\Model\UserPrivilegesManager;
 
 class UsersPresenter extends BasePresenter {
 
     private $user;
-    private $ChangePassFormFactory;
     private $userM;
-    private $ChangeUsernameFormFactory;
-
-    public function __construct(User $user, Forms\ChangePassFormFactory $changepassformfactory, UsersManager $userM, Forms\ChangeUsernameFormFactory $changeusernameformfactory) {
+    private $editUserFormFactory;
+    private $id;
+    private $userPrivilegesManager;
+    
+    public function __construct(User $user, UsersManager $userM, EditUserFormFactory $editUserFormFactory, UserPrivilegesManager $userPrivilegesManager) {
         $this->user = $user;
-        $this->ChangePassFormFactory = $changepassformfactory;
         $this->userM = $userM;
-        $this->ChangeUsernameFormFactory = $changeusernameformfactory;
+        $this->editUserFormFactory = $editUserFormFactory;
+        $this->userPrivilegesManager = $userPrivilegesManager;
+    }
+    
+    public function actionEdit($id){
+        $row = $this->userM->getUserById($id);
+        if($row){
+            $this->id = $id;
+        }else{
+            $this->flashMessage('Nastala chyba při editaci uživatele.','danger');
+            $this->redirect('Homepage:');
+        }
     }
 
-    public function renderDefault() {
+
+        public function renderDefault() {
         if ($this->user->isAllowed('users', 'view')) {
-            $this->template->users = $this->userM->getUsers();
+            $this->template->users = $this->userM->getUsers()->order('Email ASC');
+            $this->template->roles = $this->userPrivilegesManager->getAllPrivileges();
         } else {
             $this->flashMessage('Nemáš oprávnění vidět uživatele.', 'danger');
             $this->redirect('Homepage');
         }
+    }
+
+    protected function createComponentEditUserForm() {
+        return $this->editUserFormFactory->create(function ($message = '', $type = 'info') {
+                    $this->flashMessage($message, $type);
+                    $this->redirect('Users:');
+                }, $this->id);
     }
 
     public function handleDeleteUser($id = '') {
@@ -44,7 +65,6 @@ class UsersPresenter extends BasePresenter {
             $this->flashMessage('Nemáš oprávnění smazat uživatele.', 'danger');
             $this->redirect('Homepage');
         }
-        
     }
 
 }

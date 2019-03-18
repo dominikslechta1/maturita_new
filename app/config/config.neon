@@ -27,6 +27,7 @@ services:
 	- App\Model\PrivilegeManager
 	- App\Forms\FormFactory
 	- App\Forms\SignInFormFactory
+	- App\Forms\EditUserFormFactory
 	- App\Forms\SignUpFormFactory
 	- App\Forms\ChangePassFormFactory
 	- App\Forms\GetEmailFormFactory

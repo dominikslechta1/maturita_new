@@ -1,7 +1,6 @@
 {* Latte template *}
 
 {block content}
-
 <h1 n:block=title class="text-dark">Seznam Uživatelů</h1>
 {if $user->isAllowed('users', 'view')}
     {snippet users}
@@ -14,12 +13,33 @@
                         <p><strong>Jméno:</strong> {$usera->Firstname}</p>
                         <p><strong>Příjmení:</strong> {$usera->Surname}</p>
                     </div>
+                    <div class="ml-lg-auto">
+                        
+                        <strong>Role</strong>
+                        <ul class="list-unlisted">
+                            {foreach $roles as $rolearr}
+                                {if $rolearr[0] == $id}
+                                    <li>{$rolearr[1]}</li>
+                                {/if}
+                            {/foreach}
+                        </ul>
+                    </div>
                     <div class="btn-group-vertical ml-lg-auto" role="group">
-                        <a class="btn btn-warning" href="#" role="button">Upravit</a>
-                        <a class="btn btn-danger" n:href="deleteUser! $usera->idUser" role="button">Smazat</a>
+                        <a class="btn btn-warning" n:href="Users:edit $usera->idUser" role="button">Upravit</a>
+                        <a class="btn btn-danger" n:if="$user->getId() !== $usera->idUser" n:href="deleteUser! $usera->idUser" role="button">Smazat</a>
+                        <a class="btn btn-danger disabled" n:if="$user->getId() == $usera->idUser" href="#" role="button">Nelze smazat</a>
                     </div>
                 </div>
             </div>
         {/foreach}
     {/snippet}
 {/if}
+
+{/block}
+{block head}
+<style>
+    .list-unlisted{
+        list-style: none;
+    }
+</style>
+{/block}

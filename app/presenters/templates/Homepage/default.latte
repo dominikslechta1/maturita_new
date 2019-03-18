@@ -1,5 +1,5 @@
 {block content}
-<h1 n:block=title class="text-dark">Seznam projektů</h1>
+<h1 n:block=title class="text-dark">Seznam veřejných {if $user->isInRole('administrator')}i neveřejných{/if}projektů</h1>
 
 <div class="dropdown mb-4">
     <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -16,6 +16,7 @@
 
 {snippet projects}
     <!--projekty-->
+    {ifset $projects}
     {if $projects->count('*') > 0}
     {foreach $projects as $id => $row}
         <div class="rounded border bg-white p-3 mt-3">
@@ -51,6 +52,9 @@
     {else}
         Nejsou projekty které by jsi mohl vidět
     {/if}
+    {else}
+        Nejsou projekty které by jsi mohl vidět
+    {/ifset}
 {/snippet}
 {/block}
 

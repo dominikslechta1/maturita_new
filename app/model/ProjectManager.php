@@ -91,7 +91,7 @@ class ProjectManager {
     }
 
     public function getYears() {
-        return $this->database->table(self::TABLE_NAME)->group(self::COLUMN_YEAR);
+        return $this->database->table(self::TABLE_NAME)->group(self::COLUMN_YEAR)->select(self::COLUMN_YEAR);
     }
 
     public function get() {
@@ -120,11 +120,11 @@ class ProjectManager {
     }
 
     public function getProjectsByUser($userId) {
-        return $this->database->table(self::TABLE_NAME)->where(self::COLUMN_USER, $userId);
+        return $this->database->table(self::TABLE_NAME)->whereOr([self::COLUMN_USER => $userId, self::COLUMN_CONSULTANT => $userId, self::COLUMN_OPONENT => $userId]);
     }
 
     public function deleteProjectOnUser($idUser) {
-        $res = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_USER, $idUser)->delete();
+        $res = $this->database->table(self::TABLE_NAME)->whereOr([self::COLUMN_USER => $idUser, self::COLUMN_CONSULTANT => $idUser, self::COLUMN_OPONENT => $idUser])->delete();
         if ($res > 0) {
             return true;
         } else {
@@ -132,12 +132,12 @@ class ProjectManager {
         }
     }
 
-    public function userIsInProject($userId) {
+    public function userIsInProject($userId, $projectId) {
         if ($this->database->table(self::TABLE_NAME)
                         ->whereOr([self::COLUMN_USER => $userId,
                             self::COLUMN_CONSULTANT => $userId,
                             self::COLUMN_OPONENT => $userId
-                        ])->count('*') > 0) {
+                        ])->where(self::COLUMN_ID, $projectId)->count('*') > 0) {
             return true;
         } else {
             return false;
@@ -190,6 +190,9 @@ class ProjectManager {
                 ]);
             }
         }
+    }
+    public function query($query, $projectId){
+        $this->database->query($query, $projectId);
     }
 
 }

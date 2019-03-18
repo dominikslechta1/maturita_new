@@ -30,11 +30,9 @@ final class RoleHelper {
      * gets all project that belongs to current user roles and visibility of projects
      * $return $project returns project database object
      */
-    public function GetProjectsByRoleAndVisible($year = '') {
+    public function GetProjectsByVisible($year = '') {
         if ($this->user->isAllowed('projects', 'private')) {
             return $this->projectM->showPublic(false)->showYear($year);
-        } elseif ($this->user->isAllowed('projects', 'public')) {
-            return $this->projectM->showPublic(true)->showYear($year);
         } else {
             return $this->projectM->showPublic(true)->showYear($year);
         }
